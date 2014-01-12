@@ -1,0 +1,662 @@
+/* ------- Login Form ------- */
+/* ------- Container ------- */
+
+#container {
+	position: absolute;
+	left: 30%;
+	top: 30%;
+	width: 508px;
+	height: 262px;
+	text-align: left;
+	font-family: Verdana, Arial;
+	font-weight: normal;
+	font-size: 12px;
+	color: #ffffff;
+	background: url(images/form-bg.png) top left no-repeat;
+	padding-top: 0px;
+}
+
+.login {
+	width: 470px;
+	float: left;
+	margin-top: 33px;
+	margin-left: 40px;
+	font-size: 20px;
+	color: #333;
+	text-shadow: 1px 1px 0 #ccc, -1px -1px 0 #ccc, 1px -1px 0 #ccc, -1px 1px 0 #ccc;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+.username-details {
+	width: 180px;
+	float: left;
+	margin-top: 30px;
+	margin-left: 40px;
+}
+
+.password-details {
+	width: 180px;
+	float: left;
+	margin-top: 30px;
+	margin-left: 10px;
+}
+
+input[type="text"], input[type="password"] {
+	width: 120px;
+	height: 16px;
+	margin-top: 10px;
+	margin-left: 10px;
+	font-family: Verdana, Arial;
+	font-size: 12px;
+	color: #2d2d2d;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+.username-text {
+	color: #333;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+#username-field {
+	margin-top: 10px;
+	width: 180px;
+	height: 38px;
+	background: url(images/username-field.png) center left no-repeat;
+}
+
+#username-field:hover, #username-field:focus {
+	background: url(images/username-field-hover.png) center left no-repeat;
+}
+
+.password-text {
+	color: #333;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+#password-field {
+	margin-top: 10px;
+	width: 180px;
+	height: 38px;
+	background: url(images/password-field.png) center left no-repeat;
+}
+
+#password-field:hover, #password-field:focus {
+	background: url(images/password-field-hover.png) center left no-repeat;
+}
+
+.newuser-details {
+	width: 380px;
+	float: left;
+	margin-top: 15px;
+	margin-left: 40px;
+}
+
+#newuser-text {
+	color: #333;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	text-decoration: underline;
+	cursor: pointer;
+	float: right;
+	width: 180px;
+}
+
+#newuser-password-details {
+	width: 200px;
+	height: 100px;
+	float: left;
+}
+
+.newuser-password-text {
+	display: none;
+	margin-top: 5px;
+	margin-left: 0px;
+	width: 140px;
+	color: #333;
+	float: left;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+#newuser-password-field {
+	display: none;
+	margin-top: 10px;
+	margin-left: 0px;
+	width: 180px;
+	height: 38px;
+	float: left;
+	background: url(images/password-field.png) center left no-repeat;
+}
+
+#login-details {
+	float: left;
+	width: 410px;
+	height: 235px;
+	margin-left: 10px;
+	margin-top: 10px;
+	z-index: 100;
+}
+
+#submit-button {
+	float: right;
+	width: 88px;
+	height: 233px;
+	margin-top: 12px;
+	font-family: Verdana, Arial;
+	font-size: 40px;
+	color: #ffffff;
+	cursor: pointer;
+	z-index: 100;
+}
+
+#submit-button:hover, #submit-button:focus {
+	text-shadow: 5px 5px 10px #ffffff;
+	box-shadow: 1px 1px 5px 5px #aaa;
+}
+
+#header-options {
+	background: #d6dcde;
+	width: 100%;
+	height: 40px;
+	left: 0%;
+	top: 0%;
+	position: absolute;
+	z-index: 8;
+	display: none;
+}
+
+#skwiki-viewer {
+	position: absolute;
+	left: 2px;
+	top: 40px;
+	width: 99%;
+	height: 90%;
+}
+
+#header-options-left {
+	width: 49%;
+	height: 30px;
+	float: left;
+	display: table;
+	margin-left: 20px;
+	padding: 3px;
+	text-align: left;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-size: 20px;
+}
+
+#header-options-right {
+	float: right;
+	width: 200px;
+	height: 30px;
+	padding: 0px;
+}
+
+#table-row {
+	padding: 0px;
+}
+
+#options-button {
+	margin-left: 0px;
+	margin-top: 0px;
+	background: #1399d7;
+	width: 120px;
+	height: 30px;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	color: white;
+	background-size: 120px 30px;
+	display: table;
+	text-align: center;
+	cursor: pointer;
+}
+
+#options-button:hover, #options-button:focus {
+	box-shadow: 1px 1px 5px 5px #aaa;
+	background: #007ead;
+	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+#screenshot-button {
+	margin-left: 0px;
+	margin-top: 0px;
+	background: #1399d7;
+	width: 120px;
+	height: 30px;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	color: white;
+	background-size: 120px 30px;
+	display: table;
+	text-align: center;
+	cursor: pointer;
+}
+
+#screenshot-button:hover, #screenshot-button:focus {
+	box-shadow: 1px 1px 5px 5px #aaa;
+	background: #007ead;
+	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+#logout-button {
+	margin-left: 0px;
+	margin-top: 0px;
+	background: #1399d7;
+	width: 100px;
+	height: 30px;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	color: white;
+	background-size: 100px 30px;
+	display: table;
+	text-align: center;
+	cursor: pointer;
+}
+
+#logout-button:hover, #logout-button:focus {
+	box-shadow: 1px 1px 5px 5px #aaa;
+	background: #007ead;
+	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+span {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#project-viewer {
+	position: absolute;
+	left: 2px;
+	top: 40px;
+	width: 99%;
+	height: 90%;
+	display: none;
+}
+
+/* ------- Projects --------- */
+
+#project-viewer-username {
+	width: 50%;
+	height: 40px;
+	font-family: "Helvetica", "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-size: 25px;
+	margin-left: 30px;
+	margin-top: 20px;
+	float: left;
+}
+
+#project-viewer-searchbox {
+	float: right;
+	width: 600px;
+}
+
+#project-viewer-add-project {
+	margin-left: 0px;
+	margin-top: 30px;
+	background: #1399d7;
+	width: 150px;
+	height: 30px;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	color: white;
+	background-size: 150px 30px;
+	display: table;
+	text-align: center;
+	cursor: pointer;
+	float:left;
+	padding: 0px 15px;	
+}
+
+#project-viewer-add-project:hover, #project-viewer-add-project:focus {
+	text-decoration: none;
+	background: #007ead;
+	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+
+
+#project-viewer-searchbox-header {
+	background-color: transparent;
+	margin-top:30px;
+	float:right;
+	width: 387px;
+}
+
+#project-viewer-searchbox-newsearch {
+	padding: 0px;
+}
+
+#project-viewer-searchbox-textinput2 {
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #666;
+	padding: 5px 15px;
+	border: 1px solid #0076a3;
+	border-top-left-radius: 5px 5px;
+	border-bottom-left-radius: 5px 5px;
+	width:300px;
+}
+
+#project-viewer-searchbox-button2 {
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	width:50px;
+	outline: none;
+	cursor: pointer;
+	padding: 5px 7px;
+	text-align: center;
+	text-decoration: none;
+	color: #ffffff;
+	border: solid 1px #0076a3;
+	border-right: 0px;
+	background: #0095cd;
+	background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+	background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+	border-top-right-radius: 5px 5px;
+	border-bottom-right-radius: 5px 5px;
+}
+
+#project-viewer-searchbox-button2:hover {
+	text-decoration: none;
+	background: #007ead;
+	background: -webkit-gradient(linear, left top, left bottom, from(#0095cc), to(#00678e));
+	background: -moz-linear-gradient(top,  #0095cc,  #00678e);
+}
+
+/* Fixes submit button height problem in Firefox */
+.project-viewer-searchbox-button2::-moz-focus-inner {
+	border: 0;
+}
+
+.project-viewer-searchbox-clear {
+	clear: both;
+}
+
+#project-viewer-project-user-list {
+	width: 95%;
+	height:70%;	
+}
+
+#project-viewer-project-list {
+	width: 60%;
+	height: 100%;
+	font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-size: 25px;
+	margin-left: 30px;
+	margin-top: 20px;
+	float: left;
+	border: 1px solid #d6dcde;
+}
+
+#project-viewer-user-list {
+	width: 30%;
+	height: 100%;
+	font-family: "Helvetica", "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+	font-size: 25px;
+	margin-left: 30px;
+	margin-top: 20px;
+	float: right;
+	border: 1px solid #d6dcde;
+}
+
+#new-project-form{
+	position: absolute;
+	border: 5px solid gray;
+	padding: 10px;
+	background: white;
+	width: 270px;
+	height: 190px;
+	z-index: 200;
+}
+
+
+/* ------- GWT Panels ------- */
+
+.gwt-ButtonWidget {
+	background-color: transparent;
+	border: 0px solid transparent;
+	color: #0c1b2b;
+	font-family: arial;
+	font-size: 10px;
+	padding: 0px 0px 0px 0px;
+}
+
+.gwt-ButtonWidget2 {
+	background-color: transparent;
+	border: 0px solid transparent;
+	color: #E7E8F0;
+	font-family: arial;
+	font-size: 10px;
+	padding: 0px 0px 10px 10px;
+}
+
+.gwt-SelectionMask {
+	background-color: rgba(255, 245, 44, 0.05);
+	border: 6px solid rgba(255, 245, 44, 1);
+	z-index: 10;
+}
+
+.gwt-dummylabel {
+	color: #FFFFFF;
+	background-color: transparent;
+}
+.gwt-ButtonWidget3 {
+}
+
+.gwt-DialogBox {
+	background: #F1F1F1;
+	padding: 0px 0px 0px 0px;
+}
+
+.gwt-previewTextFontSize {
+	border: 0px transparent;
+	color: black !important;
+	font-size: 6px !important;
+	font-family: Arial !important;
+}
+
+.gwt-navigationPanel {
+	background-color: transparent;
+	border: 1px solid #000000;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-pathViewer {
+	background-color: #CAEDDA;
+	border: 1px solid #545454;
+}
+
+.gwt-navigationButtonPanel {
+	background-color: #FFFFFF;
+	border: 0px transparent;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-ButtonNavigation {
+	background-color: transparent;
+	border: 0px solid transparent;
+	color: transparent;
+	padding: 5px 5px 5px 5px;
+}
+
+.gwt-ButtonNavigation:active {
+	background-color: transparent;
+	border: 0px solid transparent;
+	color: transparent;
+	font-family: arial;
+	font-size: 10px;
+	padding: 0px 0px 0px 0px;
+	-moz-transform: scale(0.5, 1);
+}
+
+.gwt-previewPanel {
+	background-color: #FFFFFF;
+	border: 0px transparent;
+}
+
+.gwt-Image {
+	padding: 0px 0px 0px 0px
+}
+
+.gwt-MenuWidget {
+	background-color: #FFFFFF;
+	border: 1px solid #888888;
+	box-shadow: 3px 3px 3px #888888;
+}
+
+.gwt-ButtonPanelWidget {
+	background-color: #FFFFFF;
+	border-radius: 3px;
+	position: absolute;
+}
+.gwt-PanelWidget {
+	border: 0px solid #a0a0a0;
+	background-color: #ffffff;
+	width: 100%;
+	height: 100%;
+}
+
+.gwt-PreviewPanelWidget {
+	border: 2px solid rgba(0, 0, 0, 0.3);
+	background-color: #ffffff;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-PreviewPanelWidget1 {
+	border: 2px solid rgba(53, 95, 222, 0.3);
+	background-color: #ffffff;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-PreviewPanelWidget2 {
+	border: 2px solid rgba(255, 167, 0, 0.3);
+	background-color: #ffffff;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-PreviewPanelWidget3 {
+	border: 2px solid rgba(0, 201, 0, 0.3);
+	background-color: #ffffff;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-PreviewPanelWidget4 {
+	border: 2px solid #242424;
+	background-color: #ffffff;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+.gwt-RootPanelWidget {
+	background-color: #F2F2F2;
+	border: 1px solid #E7E8F0;
+}
+
+.gwt-PanelHeaderWidget {
+
+}
+
+.gwt-TouchPanelWidget {
+	background-color: transparent;
+	border: 0px solid transparent;
+	cursor: pointer;
+}
+
+.gwt-TouchPanelWidget-focus {
+	background-color: transparent;
+	border: 1px solid #CAEDDA;
+}
+
+.gwt-RichTextArea {
+	background-color: transparent;
+	border: 1px transparent;
+}
+
+.hasRichTextToolbar {
+	border: 0px;
+}
+
+.gwt-RichTextToolbar {
+	background: #CAEDDA;
+	border-bottom: 1px solid #CAEDDA;
+	padding: 3px;
+	margin: 0px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-up {
+	padding: 0px 1px 0px 0px;
+	margin-right: 4px;
+	margin-bottom: 4px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-up-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 1px 0px 0px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-down {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-PushButton-down-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-up {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 1px 0px 0px;
+	border: 1px solid #bbb;
+	border-bottom: 1px solid #a0a0a0;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-up-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 1px 0px 0px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-down {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.gwt-RichTextToolbar .gwt-ToggleButton-down-hovering {
+	margin-right: 4px;
+	margin-bottom: 4px;
+	padding: 0px 0px 0px 1px;
+	border-width: 1px;
+}
+
+.cw-RichText {
+	border: 1px solid #BBBBBB;
+	border-spacing: 0px;
+}
+
+.gwt-Popup-Login {
+	background: #FFFFFF;
+	color: #FFF;
+}
+.gwt-Label-Login {
+	color: Navy;
+	font-size: 14px;
+	font-style: normal;
+	font-family: Arial;
+	font-weight: bold;
+}
+.gwt-Login-CheckBox {
+	color: red;
+}
+

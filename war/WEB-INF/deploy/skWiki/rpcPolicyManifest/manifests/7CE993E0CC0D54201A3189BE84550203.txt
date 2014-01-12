@@ -1,0 +1,2 @@
+serviceClass: edu.purdue.pivot.skwiki.client.SearchTagService
+path: B2AE9347BED41557F8AB9346C3827016.gwt.rpc

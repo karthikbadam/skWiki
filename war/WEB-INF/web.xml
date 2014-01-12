@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+
+
+<web-app>
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+
+
+	<!-- Default page to serve -->
+
+	<servlet>
+		<servlet-name>commitServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CommitServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>commitServlet</servlet-name>
+		<url-pattern>/skWiki/commit</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>checkoutServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CheckoutServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>checkoutServlet</servlet-name>
+		<url-pattern>/skWiki/checkout</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>checkoutallServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CheckoutAllServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>checkoutallServlet</servlet-name>
+		<url-pattern>/skWiki/checkoutall</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>checkIDServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CheckIDServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>checkIDServlet</servlet-name>
+		<url-pattern>/skWiki/checkID</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>checkOutLatestServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CheckOutLatestServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>checkOutLatestServlet</servlet-name>
+		<url-pattern>/skWiki/checkOutLatest</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>SearchTagServiceServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.SearchTagServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SearchTagServiceServlet</servlet-name>
+		<url-pattern>/skWiki/searchTag</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>GetAllRevServiceServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.GetAllRevServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>GetAllRevServiceServlet</servlet-name>
+		<url-pattern>/skWiki/getAllRev</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>CreateProjectServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CreateProjectImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CreateProjectServlet</servlet-name>
+		<url-pattern>/skWiki/createProject</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>CheckProjectListServiceServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CheckProjectListServiceImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CheckProjectListServiceServlet</servlet-name>
+		<url-pattern>/skWiki/checkProjectList</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>CheckoutSubRevServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.CheckoutSubRevImpl</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>CheckoutSubRevServlet</servlet-name>
+		<url-pattern>/skWiki/checkoutSubRev</url-pattern>
+	</servlet-mapping>
+
+
+	<context-param>
+		<!-- max size of the upload request -->
+		<param-name>maxSize</param-name>
+		<param-value>3145728</param-value>
+	</context-param>
+	<context-param>
+		<param-name>slowUploads</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>fileUploadServlet</servlet-name>
+		<servlet-class>edu.purdue.pivot.skwiki.server.ImageUploaderServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>fileUploadServlet</servlet-name>
+		<url-pattern>*.gupld</url-pattern>
+	</servlet-mapping>
+
+
+</web-app>

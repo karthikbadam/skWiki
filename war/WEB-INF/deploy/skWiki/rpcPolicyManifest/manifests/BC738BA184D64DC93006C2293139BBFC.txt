@@ -1,0 +1,2 @@
+serviceClass: edu.purdue.pivot.skwiki.client.CommitService
+path: 9CC53FFEEC0CE7E250DC49E9239D2315.gwt.rpc

@@ -1,0 +1,9 @@
+# Module skWiki
+# RPC service class, partial path of RPC policy file
+edu.purdue.pivot.skwiki.client.CheckIDService, BA28CFD93DE8952E08C56B60C994C193.gwt.rpc
+edu.purdue.pivot.skwiki.client.CheckoutAllService, 0FFD32D8746F5F97C1942871634F6EC3.gwt.rpc
+edu.purdue.pivot.skwiki.client.CheckoutService, 9E5D7B510F62ACB29847C47322D3134A.gwt.rpc
+edu.purdue.pivot.skwiki.client.CreateProjectService, BAD9452B24E5B2C340F6C3BCC43F12A0.gwt.rpc
+edu.purdue.pivot.skwiki.client.SearchTagService, B2AE9347BED41557F8AB9346C3827016.gwt.rpc
+edu.purdue.pivot.skwiki.client.GetAllRevService, 25B6F95D65E511CC3CBB4345DE96C20E.gwt.rpc
+edu.purdue.pivot.skwiki.client.CommitService, 9CC53FFEEC0CE7E250DC49E9239D2315.gwt.rpc

@@ -1,0 +1,2 @@
+serviceClass: edu.purdue.pivot.skwiki.client.CheckIDService
+path: BA28CFD93DE8952E08C56B60C994C193.gwt.rpc

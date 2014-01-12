@@ -1,0 +1,119 @@
+<!doctype html>
+
+<html>
+	<head>
+		<link rel="shortcut icon" href="images/skWiki.png" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>skWiki</title>
+		<link type="text/css" rel="stylesheet" href="skWiki.css">
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="skWiki/skWiki.nocache.js"></script>
+		
+	</head>
+
+	<body>
+		<script type="text/javascript" src="html2canvas.js"></script>
+		
+		<div id="header-options">
+			<div id="header-options-left">
+				<span id="header-options-left-text">SKWIKI</span>
+			</div>
+			<table id="header-options-right" border = "0">
+				<tr id="table-row">
+					<td>
+					<div id="options-button">
+						<span id="options-button-text">All Projects</span>
+					</div></td>
+					<td>
+					<div id="screenshot-button">
+						<span id="screenshot-button-text">Take Screenshot</span>
+					</div></td>
+					
+					<td>
+					<div id="logout-button">
+						<span>Logout</span>
+					</div></td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="skwiki-viewer"> </div>
+
+		<div id="project-viewer"> 
+			<div id="project-viewer-username"><span id="project-viewer-username-text">Hi User</span></div>
+			<div id="project-viewer-searchbox"> 
+				<!-- HTML for SEARCH BAR -->
+				<div id="project-viewer-add-project"><span>+ Create Project</span></div>
+				<div id="project-viewer-searchbox-header">
+			        <input type="text" id="project-viewer-searchbox-textinput2" name="q" size="21" maxlength="120" value="">
+			        <input type="button" value=">" id="project-viewer-searchbox-button2">
+					<div class="project-viewer-searchbox-clear"></div>
+				</div>
+			</div>
+			<div id="project-viewer-project-user-list">
+				<div id="project-viewer-project-list"> </div>
+				<div id="project-viewer-user-list"> </div>
+			</div>
+		</div>
+
+		<div id="container">
+			<div id="login-details">
+				<div class="login">SKWIKI LOGIN</div>
+				<div class="username-details">
+					<div class="username-text">
+						Username:
+					</div>
+					<div id="username-field">
+						<input type="text" name="username" id="username-field-value">
+						</input>
+					</div>
+				</div>
+				<div class="password-details">
+					<div class="password-text">
+						Password:
+					</div>
+					<div id="password-field">
+						<input type="password" name="password" id="password-field-value"/>
+						</input>
+					</div>
+				</div>
+				<div class="newuser-details">
+					<div id="newuser-password-details">
+						<div class="newuser-password-text">
+							Retype Password:
+						</div>
+						<div id="newuser-password-field">
+							<input type="password" name="password" id="newuser-password-field-value"/>
+							</input>
+						</div>
+					</div>
+					<div id="newuser-text">Create new user</div>
+				</div>
+			</div>
+			<div id="submit-button">
+			</div>
+		</div>
+
+		<div id="new-project-form" style="display:none">
+			<h2>Project details</h2>
+			<label>Project name: </label><input type="text" name="project-name" id="new-project-name" /><br /><br />
+			<label>Project Description: </label><input type="text" name="project-description" id="new-project-details"/><br /><br/>
+			<input type="button" value="OK" id="new-project-form-submit"/>
+			<a href="#" id="new-project-form-close" >Close</a>
+		</form>
+
+		<!-- OPTIONAL: include this if you want history support -->
+		<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position: absolute; width: 0; height: 0; border: 0"></iframe>
+
+		<noscript>
+			<div
+			style="width: 22em; position: absolute; left: 50%; margin-left: -11em; color: red; background-color: white; border: 1px solid red; padding: 4px; font-family: sans-serif">
+				Your web browser must have JavaScript enabled in order for this
+				application to display correctly.
+			</div>
+		</noscript>
+
+		<script type="text/javascript" language="javascript" src="skWiki-client.js"></script>
+
+	</body>
+</html>
