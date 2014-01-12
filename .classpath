@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-fileupload-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/commons-io-2.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gwt-crop-0.4.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gwt-graphics-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gwt-servlet-2.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gwt-slider-bar-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/gwtupload-0.6.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/junit-4.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mogaleaf_simplecolorpicker_1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/postgresql-9.2-1002.jdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/raphaelgwt-r42.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/smartgwt-skins.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/smartgwt.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/tatami-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/tatamix-1.4.jar"/>
+	<classpathentry kind="lib" path="libs/gwt-d3-api-1.0.0.jar"/>
+	<classpathentry kind="lib" path="libs/gwt-d3-js-3.3.6.jar"/>
+	<classpathentry kind="lib" path="libs/easygwt-1.2.0.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>
