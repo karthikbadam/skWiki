@@ -167,8 +167,6 @@ input[type="text"], input[type="password"] {
 	position: absolute;
 	left: 2px;
 	top: 40px;
-	width: 99%;
-	height: 90%;
 }
 
 #header-options-left {
