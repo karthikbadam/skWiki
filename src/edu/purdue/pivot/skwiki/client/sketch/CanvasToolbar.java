@@ -65,7 +65,7 @@ public class CanvasToolbar extends Composite {
 		      } else if (sender == clear) {
 		        canvas.clear();
 		      } else if (sender == resize) {
-			    canvas.resize();
+			    //canvas.resize();
 			  } 
 		}
 

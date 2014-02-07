@@ -261,7 +261,7 @@ final public class WindowPanel extends FocusPanel {
 		if (contentPanel instanceof Surface) {
 			((TouchPad)contentPanel).clear();
 			((TouchPad)contentPanel).setSize(width, height);
-			((TouchPad)contentPanel).renewImage();
+			//((TouchPad)contentPanel).redraw();
 		}
 		else {
 		contentPanel.setHeight(height+"px");

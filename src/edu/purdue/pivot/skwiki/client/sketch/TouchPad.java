@@ -93,11 +93,11 @@ public class TouchPad extends Surface implements AttachedPanel {
 	Vector2 p2 = new Vector2();
 	Vector2 p3 = new Vector2();
 	int strokePointCount = 0;
-	int bufferCount = 17;
-	
-	//context2d
-	Context2d canvas_context; 
-	
+	int bufferCount = 13;
+
+	// context2d
+	Context2d canvas_context;
+
 	public TouchPad(String uuid, String uid, float scaleWidth,
 			float scaleHeight, int windowWidth, int windowHeight) {
 		super((int) (5 * windowWidth * scaleWidth / 6),
@@ -191,6 +191,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 			@Override
 			public void onTouchStart(TouchStartEvent event) {
+				myHistoryManagerRedoStack.clearHistory();
 				leftMouseDown = true;
 
 				// surface.setStyleName("gwt-TouchPanelWidget-focus");
@@ -207,13 +208,12 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 					oldx = x;
 					oldy = y;
-					
-					
+
 					PathHeadHistory aPathHeadHistory = new PathHeadHistory(
 							new Point(x, y), strokeSize, currentColor);
 					myHistoryManager.addHistory(aPathHeadHistory);
 					lastPosition.set(x, y);
-					
+
 					if (strokePointCount == 0) {
 						p1.x = x;
 						p1.y = y;
@@ -221,11 +221,14 @@ public class TouchPad extends Surface implements AttachedPanel {
 						p2.y = y;
 						strokePointCount++;
 						strokePointCount++;
-						canvas_context.setStrokeStyle(currentColor.getColorCode());
+						canvas_context.setStrokeStyle(currentColor
+								.getColorCode());
 						canvas_context.setFillStyle(currentColor.getColorCode());
-						canvas_context.setLineWidth(((double)strokeSize)*0.4);
+						canvas_context
+								.setLineWidth(((double) strokeSize) * 0.4);
 						canvas_context.beginPath();
-						canvas_context.arc(x, y, ((double)strokeSize)*0.4, 0, 2*Math.PI);
+						canvas_context.arc(x, y, ((double) strokeSize) * 0.4,
+								0, 2 * Math.PI);
 						canvas_context.fill();
 					}
 
@@ -281,120 +284,54 @@ public class TouchPad extends Surface implements AttachedPanel {
 					surface.save().setFillStyle(KnownColor.WHITE)
 							.fillRectangle(rectangle);
 					RemoveHistory aRemoveHistory = new RemoveHistory(new Point(
-							(int)x, (int)y), eraserSize);
+							(int) x, (int) y), eraserSize);
 					myHistoryManager.addHistory(aRemoveHistory);
 
 				} else if (leftMouseDown) {
+					AddHistory addHistory = new AddHistory(new Point((int) x,
+							(int) y), new Point((int) x, (int) y), strokeSize,
+							currentColor);
+					myHistoryManager.addHistory(addHistory);
 
-					if (false) {
+					if (strokePointCount == 2) {
 
-					} else {
-						 if (strokePointCount == 1) {
-							//canvas_context.beginPath();
-							//canvas_context.rect(x, y, ((double)strokeSize)*0.732, ((double)strokeSize)*0.732);
-							//canvas_context.stroke();
+						canvas_context.setStrokeStyle(currentColor
+								.getColorCode());
+						canvas_context.setFillStyle(currentColor.getColorCode());
+						canvas_context
+								.setLineWidth(((double) strokeSize) * 0.4);
+						canvas_context.setLineCap(LineCap.ROUND);
+						canvas_context.setLineJoin(LineJoin.ROUND);
+						canvas_context
+								.setShadowBlur(((double) strokeSize) * 0.5);
+						canvas_context.setShadowColor(currentColor
+								.getColorCode());
+						p3.x = x;
+						p3.y = y;
+						p0.x = p1.x + (p1.x - p2.x);
+						p0.y = p1.y + (p1.y - p2.y);
+						strokePointCount++;
 
-						} else if (strokePointCount == 2) {
+						ArrayList<Vector2> buffList = get_buffer(p0, p1, p2,
+								p3, bufferCount);
 
-							canvas_context.setStrokeStyle(currentColor.getColorCode());
-							canvas_context.setFillStyle(currentColor.getColorCode());
-							canvas_context.setLineWidth(((double)strokeSize)*0.4);
-							canvas_context.setLineCap(LineCap.ROUND);
-							canvas_context.setLineJoin(LineJoin.ROUND);
-							canvas_context.setShadowBlur(((double)strokeSize)*0.5);
-							canvas_context.setShadowColor(currentColor.getColorCode());
-							p3.x = x;
-							p3.y = y;
-							p0.x = p1.x + (p1.x - p2.x);
-							p0.y = p1.y + (p1.y - p2.y);
-							strokePointCount++;
-							
-
-							ArrayList<Vector2> buffList = get_buffer(p0, p1,
-									p2, p3, bufferCount);
-
-							bufferCount = buffList.size();
-							oldx = (int)buffList.get(0).x;
-							oldy = (int)buffList.get(0).y;
-							canvas_context.beginPath();
-							canvas_context.moveTo(oldx, oldy);
-							int i = 1;
-							for (i = 1; i < bufferCount - 2; i++) {
-								x = buffList.get(i).x;
-								y = buffList.get(i).y;
-								double nextx = buffList.get(i+1).x;
-								double nexty = buffList.get(i+1).y;
-								double c = (x + nextx) / 2;
-								double d = (y + nexty) / 2;
-								canvas_context.quadraticCurveTo(x, y, c, d);
-								//canvas_context.stroke();
-								
-								//canvas_context.lineTo(x, y);
-//								surface.getElement().getStyle()
-//								 .setCursor(Cursor.CROSSHAIR);
-//								 surface.save();
-//								 surface.setLineJoin(LineJoin.ROUND);
-//								 surface.setStrokeStyle(currentColor);
-//								 surface.setLineWidth(strokeSize);
-//								 surface.setFillStyle(currentColor);
-//								surface.strokeShape(new ShapeBuilder()
-//									 .drawLineSegment(oldx, oldy, x, y)
-//									 .build()); 
-								
-							}
+						bufferCount = buffList.size();
+						oldx = (int) buffList.get(0).x;
+						oldy = (int) buffList.get(0).y;
+						canvas_context.beginPath();
+						canvas_context.moveTo(oldx, oldy);
+						int i = 1;
+						for (i = 1; i < bufferCount - 2; i++) {
 							x = buffList.get(i).x;
 							y = buffList.get(i).y;
-							double nextx = buffList.get(i+1).x;
-							double nexty = buffList.get(i+1).y;
-							
-							canvas_context.quadraticCurveTo(x, y, nextx, nexty);
-							
-						} else {
-							
-							p0.x = p1.x; 
-							p0.y = p1.y; 
-							p1.x = p2.x;
-							p1.y = p2.y;
-							p2.x = p3.x;
-							p2.y = p3.y;
-							p3.x = x; 
-							p3.y = y;
-									
-							ArrayList<Vector2> buffList = get_buffer(p0, p1,
-									p2, p3, bufferCount);
+							double nextx = buffList.get(i + 1).x;
+							double nexty = buffList.get(i + 1).y;
+							double c = (x + nextx) / 2;
+							double d = (y + nexty) / 2;
+							canvas_context.quadraticCurveTo(x, y, c, d);
+							// canvas_context.stroke();
 
-							bufferCount = buffList.size();
-							int i = 1;
-							for (i = 1; i < bufferCount - 2; i++) {
-								x = buffList.get(i).x;
-								y = buffList.get(i).y;
-								double nextx = buffList.get(i+1).x;
-								double nexty = buffList.get(i+1).y;
-								double c = (x + nextx) / 2;
-								double d = (y + nexty) / 2;
-								canvas_context.quadraticCurveTo(x, y, c, d);
-								//canvas_context.stroke();
-								
-								//canvas_context.lineTo(x, y);
-//								surface.getElement().getStyle()
-//								 .setCursor(Cursor.CROSSHAIR);
-//								 surface.save();
-//								 surface.setLineJoin(LineJoin.ROUND);
-//								 surface.setStrokeStyle(currentColor);
-//								 surface.setLineWidth(strokeSize);
-//								 surface.setFillStyle(currentColor);
-//								surface.strokeShape(new ShapeBuilder()
-//									 .drawLineSegment(oldx, oldy, x, y)
-//									 .build()); 
-								
-							}
-							x = buffList.get(i).x;
-							y = buffList.get(i).y;
-							double nextx = buffList.get(i+1).x;
-							double nexty = buffList.get(i+1).y;		
-							canvas_context.quadraticCurveTo(x, y, nextx, nexty);
-							canvas_context.stroke();
-							surface.restore();
+							// canvas_context.lineTo(x, y);
 							// surface.getElement().getStyle()
 							// .setCursor(Cursor.CROSSHAIR);
 							// surface.save();
@@ -402,27 +339,67 @@ public class TouchPad extends Surface implements AttachedPanel {
 							// surface.setStrokeStyle(currentColor);
 							// surface.setLineWidth(strokeSize);
 							// surface.setFillStyle(currentColor);
-							//
-							// int newx = (int) (x * 0.7 + oldx * 0.3);
-							// int newy = (int) (y * 0.7 + oldy * 0.3);
-							//
 							// surface.strokeShape(new ShapeBuilder()
-							// .drawLineSegment(oldx, oldy, newx, newy)
+							// .drawLineSegment(oldx, oldy, x, y)
 							// .build());
-							//
-							// AddHistory addHistory = new AddHistory(new Point(
-							// lastPosition), new Point(newx, newy),
-							// strokeSize, currentColor);
-							// myHistoryManager.addHistory(addHistory);
-							//
-							// // draw();
-							// surface.restore();
-							// lastPosition.set(newx, newy);
-							//
-							// oldx = newx;
-							// oldy = newy;
+
 						}
+						x = buffList.get(i).x;
+						y = buffList.get(i).y;
+						double nextx = buffList.get(i + 1).x;
+						double nexty = buffList.get(i + 1).y;
+
+						canvas_context.quadraticCurveTo(x, y, nextx, nexty);
+
+					} else {
+
+						p0.x = p1.x;
+						p0.y = p1.y;
+						p1.x = p2.x;
+						p1.y = p2.y;
+						p2.x = p3.x;
+						p2.y = p3.y;
+						p3.x = x;
+						p3.y = y;
+
+						ArrayList<Vector2> buffList = get_buffer(p0, p1, p2,
+								p3, bufferCount);
+
+						bufferCount = buffList.size();
+						int i = 1;
+						for (i = 1; i < bufferCount - 2; i++) {
+							x = buffList.get(i).x;
+							y = buffList.get(i).y;
+							double nextx = buffList.get(i + 1).x;
+							double nexty = buffList.get(i + 1).y;
+							double c = (x + nextx) / 2;
+							double d = (y + nexty) / 2;
+							canvas_context.quadraticCurveTo(x, y, c, d);
+							// canvas_context.stroke();
+
+							// canvas_context.lineTo(x, y);
+							// surface.getElement().getStyle()
+							// .setCursor(Cursor.CROSSHAIR);
+							// surface.save();
+							// surface.setLineJoin(LineJoin.ROUND);
+							// surface.setStrokeStyle(currentColor);
+							// surface.setLineWidth(strokeSize);
+							// surface.setFillStyle(currentColor);
+							// surface.strokeShape(new ShapeBuilder()
+							// .drawLineSegment(oldx, oldy, x, y)
+							// .build());
+
+						}
+						x = buffList.get(i).x;
+						y = buffList.get(i).y;
+						double nextx = buffList.get(i + 1).x;
+						double nexty = buffList.get(i + 1).y;
+						canvas_context.quadraticCurveTo(x, y, nextx, nexty);
+						canvas_context.stroke();
+						surface.restore();
+
 					}
+
 				}
 				event.preventDefault();
 				event.stopPropagation();
@@ -485,62 +462,6 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 		});
 
-		// mouse move handler
-		// this.addMouseMoveHandler(new MouseMoveHandler() {
-		//
-		// @Override
-		// public void onMouseMove(MouseMoveEvent event) {
-		//
-		// int x = event.getX();
-		// int y = event.getY();
-		//
-		// if (erase && leftMouseDown) {
-		//
-		// eraserSize = 20;
-		// Rectangle rectangle = new Rectangle(x, y, eraserSize,
-		// +eraserSize);
-		// surface.save().setFillStyle(KnownColor.WHITE)
-		// .fillRectangle(rectangle);
-		// RemoveHistory aRemoveHistory = new RemoveHistory(new Point(
-		// x, y), eraserSize);
-		// myHistoryManager.addHistory(aRemoveHistory);
-		//
-		// } else if (leftMouseDown){
-		//
-		// if (isCursorResize(x, y)) {
-		//
-		// } else {
-		// surface.getElement().getStyle().setCursor(Cursor.CROSSHAIR);
-		// surface.save();
-		// surface.setLineJoin(LineJoin.ROUND);
-		// surface.setStrokeStyle(currentColor);
-		// surface.setLineWidth(strokeSize);
-		// surface.setFillStyle(currentColor);
-		//
-		// int newx = (int) (x * 0.3 + oldx * 0.7);
-		// int newy = (int) (y * 0.3 + oldy * 0.7);
-		//
-		// surface.strokeShape(new ShapeBuilder().drawLineSegment(
-		// oldx, oldy, newx, newy).build());
-		//
-		// AddHistory addHistory = new AddHistory(new Point(
-		// lastPosition), new Point(newx, newy),
-		// strokeSize, currentColor);
-		// myHistoryManager.addHistory(addHistory);
-		//
-		// // draw();
-		// surface.restore();
-		// lastPosition.set(newx, newy);
-		//
-		// oldx = newx;
-		// oldy = newy;
-		// }
-		// }
-		// event.preventDefault();
-		// event.stopPropagation();
-		// }
-		// });
-
 		this.addTouchEndHandler(new TouchEndHandler() {
 
 			@Override
@@ -558,71 +479,60 @@ public class TouchPad extends Surface implements AttachedPanel {
 				strokePointCount = 0;
 
 			}
-
 		});
-		//
-		// this.addMouseUpHandler(new MouseUpHandler() {
-		//
-		// @Override
-		// public void onMouseUp(MouseUpEvent event) {
-		//
-		// leftMouseDown = false;
-		// event.preventDefault();
-		// surface.setStyleName("gwt-TouchPanelWidget");
-		// if (erase == true) {
-		//
-		// } else {
-		// surface.getElement().getStyle().setCursor(Cursor.DEFAULT);
-		// }
-		// event.stopPropagation();
-		// //erase = false;
-		//
-		// }
-		//
-		// });
 	}
 
-	public void draw() {
-		surface.clear();
-		int historySize = myHistoryManager.historys.size();
-		int start = 0;
-		for (start = 1; start < myHistoryManager.historys.size(); start++) {
-			// for (AbstractHistory addHistory : myHistoryManager.historys) {
-			AbstractHistory addHistory = myHistoryManager.historys.get(start);
-			if (addHistory.getType() == "AddHistory") {
+	private ArrayList<Vector2> get_buffer(Vector2 p0, Vector2 p1, Vector2 p2,
+			Vector2 p3, int bufferCount) {
+		ArrayList<Vector2> buffList = new ArrayList<Vector2>();
+		double steps = 0;
+		double step = 0.0;
+		double t = 0.0;
+		double tt = 0.0;
+		double ttt = 0.0;
+		double p0x = p0.x;
+		double p1x = p1.x;
+		double p2x = p2.x;
+		double p3x = p3.x;
+		double p0y = p0.y;
+		double p1y = p1.y;
+		double p2y = p2.y;
+		double p3y = p3.y;
 
-				Point position = ((AddHistory) addHistory).position;
-				Point endPos = ((AddHistory) addHistory).endPos;
+		int ipps = bufferCount;
 
-				MyColor pathColor = ((AddHistory) addHistory).pathColor;
-				double oldx = position.getVector2().getX();
-				double oldy = position.getVector2().getY();
+		int i = 0;
+		if (true) {
+			steps = ipps - 1;
+			if (steps > 0) {
+				step = 1.0 / steps;
+				// steps = buff_base + steps;
+				// t = 0.0 => point = pnt1
+				buffList.add(new Vector2(p1.x, p1.y));
 
-				double x = endPos.getVector2().getX();
-				double y = endPos.getVector2().getY();
+				// 0.0<t<1.0 => ...
+				for (i = 1; i < steps; ++i) {
+					t += step;
+					tt = t * t;
+					ttt = tt * t;
+					buffList.add(new Vector2(
+							0.5 * ((2 * p1x) + (-p0x + p2x) * t
+									+ (2 * p0x - 5 * p1x + 4 * p2x - p3x) * tt + (-p0x
+									+ 3 * p1x - 3 * p2x + p3x)
+									* ttt),
+							0.5 * ((2 * p1y) + (-p0y + p2y) * t
+									+ (2 * p0y - 5 * p1y + 4 * p2y - p3y) * tt + (-p0y
+									+ 3 * p1y - 3 * p2y + p3y)
+									* ttt)));
+				}
 
-				// double x = 0.3 * endPos.getVector2().getX() + 0.7 * oldx;
-				// double y = 0.3 * endPos.getVector2().getY() + 0.7 * oldy;
-
-				double cx = (x + oldx) / 2;
-				double cy = (y + oldy) / 2;
-
-				strokeSize = ((AddHistory) addHistory).strokeSize;
-				surface.save().setLineJoin(LineJoin.ROUND);
-				surface.setStrokeStyle(
-						new Color(pathColor.getR(), pathColor.getG(), pathColor
-								.getB())).setLineWidth(strokeSize);
-				surface.strokeShape(new ShapeBuilder().drawLineSegment(
-						position.getVector2(), endPos.getVector2()).build());
-
-				surface.restore();
-
-			} else if (addHistory.getType() == "PathHeadHistory") {
-
+				// t = 1.0 => point = pnt2
+				buffList.add(new Vector2(p2.x, p2.y));
 			}
 		}
+		return buffList;
 	}
-
+	
 	public CanvasToolbar getToolbar() {
 		return toolbar;
 	}
@@ -657,63 +567,125 @@ public class TouchPad extends Surface implements AttachedPanel {
 		}
 	}
 
-	public void clearSurface() {
-		myHistoryManager.moveToState(0.00);
-		this.clear();
-	}
+//	public void clearSurface() {
+//		myHistoryManager.moveToState(0.00);
+//		this.clear();
+//	}
 
-	public void moveToState(double statePercent) {
-		myHistoryManager.moveToState(statePercent);
-	}
+//	public void moveToState(double statePercent) {
+//		myHistoryManager.moveToState(statePercent);
+//	}
 
-	public void renewImage() {
-		clearSurface();
-		myHistoryManager.moveToState(1.00);
-	}
+//	public void renewImage() {
+//		clearSurface();
+//		myHistoryManager.moveToState(1.00);
+//	}
 
 	public void renewImage(ArrayList<AbstractHistory> newHistorys) {
 		myHistoryManager.clearHistory();
 		for (AbstractHistory tempHistory : newHistorys) {
 			myHistoryManager.addHistory(tempHistory);
 		}
-		clearSurface();
 		redraw(myHistoryManager);
-		//myHistoryManager.moveToState(1.00);
+		// myHistoryManager.moveToState(1.00);
 	}
 
 	private void redraw(HistoryManager historyManager) {
-		int historySize = historyManager.historys.size();
-		
+		surface.clear();
 		int start = 0;
-		for (start = 1; start < myHistoryManager.historys.size(); start++) {
+		for (start = 0; start < historyManager.historys.size(); start++) {
 			// for (AbstractHistory addHistory : myHistoryManager.historys) {
-			AbstractHistory history = myHistoryManager.historys.get(start);
+			AbstractHistory history = historyManager.historys.get(start);
 			if (history.getType() == "AddHistory") {
-
 				Point position = ((AddHistory) history).position;
 				Point endPos = ((AddHistory) history).endPos;
 				MyColor pathColor = ((AddHistory) history).pathColor;
-				strokeSize = ((AddHistory) history).strokeSize;				
+				strokeSize = ((AddHistory) history).strokeSize;
 				double x = endPos.getVector2().getX();
 				double y = endPos.getVector2().getY();
-				
-				
-//				
-//				surface.save().setLineJoin(LineJoin.ROUND);
-//				surface.setStrokeStyle(
-//						new Color(pathColor.getR(), pathColor.getG(), pathColor
-//								.getB())).setLineWidth(strokeSize);
-//				surface.strokeShape(new ShapeBuilder().drawLineSegment(
-//						position.getVector2(), endPos.getVector2()).build());
-//
-//				surface.restore();
+
+				if (strokePointCount == 2) {
+
+					canvas_context.setStrokeStyle(pathColor.getColorCode());
+					canvas_context.setFillStyle(pathColor.getColorCode());
+					canvas_context.setLineWidth(((double) strokeSize) * 0.4);
+					canvas_context.setLineCap(LineCap.ROUND);
+					canvas_context.setLineJoin(LineJoin.ROUND);
+					canvas_context.setShadowBlur(((double) strokeSize) * 0.5);
+					canvas_context.setShadowColor(currentColor.getColorCode());
+					p3.x = x;
+					p3.y = y;
+					p0.x = p1.x + (p1.x - p2.x);
+					p0.y = p1.y + (p1.y - p2.y);
+					strokePointCount++;
+
+					ArrayList<Vector2> buffList = get_buffer(p0, p1, p2, p3,
+							bufferCount);
+
+					bufferCount = buffList.size();
+					oldx = (int) buffList.get(0).x;
+					oldy = (int) buffList.get(0).y;
+					canvas_context.beginPath();
+					canvas_context.moveTo(oldx, oldy);
+					int i = 1;
+					for (i = 1; i < bufferCount - 2; i++) {
+						x = buffList.get(i).x;
+						y = buffList.get(i).y;
+						double nextx = buffList.get(i + 1).x;
+						double nexty = buffList.get(i + 1).y;
+						double c = (x + nextx) / 2;
+						double d = (y + nexty) / 2;
+						canvas_context.quadraticCurveTo(x, y, c, d);
+					}
+					x = buffList.get(i).x;
+					y = buffList.get(i).y;
+					double nextx = buffList.get(i + 1).x;
+					double nexty = buffList.get(i + 1).y;
+
+					canvas_context.quadraticCurveTo(x, y, nextx, nexty);
+
+				} else {
+
+					p0.x = p1.x;
+					p0.y = p1.y;
+					p1.x = p2.x;
+					p1.y = p2.y;
+					p2.x = p3.x;
+					p2.y = p3.y;
+					p3.x = x;
+					p3.y = y;
+
+					ArrayList<Vector2> buffList = get_buffer(p0, p1, p2, p3,
+							bufferCount);
+
+					bufferCount = buffList.size();
+					int i = 1;
+					for (i = 1; i < bufferCount - 2; i++) {
+						x = buffList.get(i).x;
+						y = buffList.get(i).y;
+						double nextx = buffList.get(i + 1).x;
+						double nexty = buffList.get(i + 1).y;
+						double c = (x + nextx) / 2;
+						double d = (y + nexty) / 2;
+						canvas_context.quadraticCurveTo(x, y, c, d);
+
+					}
+					x = buffList.get(i).x;
+					y = buffList.get(i).y;
+					double nextx = buffList.get(i + 1).x;
+					double nexty = buffList.get(i + 1).y;
+					canvas_context.quadraticCurveTo(x, y, nextx, nexty);
+					canvas_context.stroke();
+					surface.restore();
+
+				}
 
 			} else if (history.getType() == "PathHeadHistory") {
 				Point position = ((PathHeadHistory) history).position;
-				
+
 				double x = position.getVector2().getX();
 				double y = position.getVector2().getY();
-				strokePointCount = 0; 
+				strokePointCount = 0;
 				if (strokePointCount == 0) {
 					p1.x = x;
 					p1.y = y;
@@ -723,14 +695,15 @@ public class TouchPad extends Surface implements AttachedPanel {
 					strokePointCount++;
 					canvas_context.setStrokeStyle(currentColor.getColorCode());
 					canvas_context.setFillStyle(currentColor.getColorCode());
-					canvas_context.setLineWidth(((double)strokeSize)*0.4);
+					canvas_context.setLineWidth(((double) strokeSize) * 0.4);
 					canvas_context.beginPath();
-					canvas_context.arc(x, y, ((double)strokeSize)*0.4, 0, 2*Math.PI);
+					canvas_context.arc(x, y, ((double) strokeSize) * 0.4, 0,
+							2 * Math.PI);
 					canvas_context.fill();
 				}
 			}
 		}
-		strokePointCount = 0; 
+		strokePointCount = 0;
 
 	}
 
@@ -834,7 +807,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 			myHistoryManagerRedoStack.historys.add(tempHistory);
 		}
 
-		renewImage();
+		redraw(myHistoryManager);
+		//renewImage();
 		// clearSurface();
 		// currentState = currentState - 0.03;
 		// myHistoryManager.moveToState(currentState);
@@ -853,8 +827,12 @@ public class TouchPad extends Surface implements AttachedPanel {
 					.remove(i);
 			myHistoryManager.addHistory(tempHistory);
 		}
-		renewImage();
+		redraw(myHistoryManager);
 	}
+	
+//	public void redraw() {
+//		redraw(myHistoryManager);
+//	}
 
 	@Override
 	public String getID() {
@@ -878,10 +856,10 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 	}
 
-	public void resize() {
-		surface.setSize(surface.getOffsetWidth() + 50,
-				surface.getOffsetHeight() + 50);
-		surface.renewImage();
-	}
+//	public void resize() {
+//		surface.setSize(surface.getOffsetWidth() + 50,
+//				surface.getOffsetHeight() + 50);
+//		surface.redraw(myHistoryManager);
+//	}
 
 }

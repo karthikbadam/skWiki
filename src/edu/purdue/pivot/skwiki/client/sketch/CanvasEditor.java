@@ -40,24 +40,24 @@ public class CanvasEditor {
 		this.canvasEditorID = uuid;
 		myPad = new TouchPad(canvasEditorID, idField, toolbars, windowWidth, windowHeight);
 
-		myAnimationSliderBar
-				.addBarValueChangedHandler(new BarValueChangedHandler() {
-					@Override
-					public void onBarValueChanged(BarValueChangedEvent event) {
-						/*
-						 * Animation handler
-						 */
-						myPad.clearSurface();
-
-						double statePercent = (event.getValue() + 0.0)
-								/ (slideBarMax + 0.0);
-						currentSliderFactor = statePercent;
-						valueBox.setText("" + statePercent);
-						if (event.getValue() != 0) {
-							myPad.moveToState(statePercent);
-						}
-					}
-				});
+//		myAnimationSliderBar
+//				.addBarValueChangedHandler(new BarValueChangedHandler() {
+//					@Override
+//					public void onBarValueChanged(BarValueChangedEvent event) {
+//						/*
+//						 * Animation handler
+//						 */
+//						myPad.clearSurface();
+//
+//						double statePercent = (event.getValue() + 0.0)
+//								/ (slideBarMax + 0.0);
+//						currentSliderFactor = statePercent;
+//						valueBox.setText("" + statePercent);
+//						if (event.getValue() != 0) {
+//							myPad.moveToState(statePercent);
+//						}
+//					}
+//				});
 
 	}
 
