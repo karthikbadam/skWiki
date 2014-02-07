@@ -299,6 +299,7 @@ public class WidgetManager {
 		imagePopup = new PopupPanel();
 		imagePopup.add(defaultUploader);
 		imagePopup.show();
+		imagePopup.setPopupPosition(400, 300);
 		imagePopup.getElement().getStyle().setZIndex(4);
 		// Enable/disable the component
 		defaultUploader.setEnabled(true);
@@ -379,6 +380,8 @@ public class WidgetManager {
 			root.addChild(tempImage);
 			imageEditorIndex++;
 			windowPanelmap.put(myEditor.getID(), windowPanel);
+			entityList.addMember(new Label("Image "+(imageEditors.indexOf(myEditor)+1)));
+			
 		}
 	};
 
@@ -389,7 +392,7 @@ public class WidgetManager {
 				uid, toolbars, windowWidth, windowHeight);
 		final TouchPad myCanvas = myEditor.getSurface();
 
-		HorizontalPanel header = new HorizontalPanel();
+		HorizontalPanel header = 	new HorizontalPanel();
 		header.add(new Label("Canvas" + (canvasEditorIndex + 1)));
 		header.setStyleName("gwt-PanelHeaderWidget");
 
@@ -568,7 +571,7 @@ public class WidgetManager {
 					root.addChild(tempImage);
 					myEditor.updateEditor(result);
 					PreloadedImage image = new PreloadedImage(
-							myEditor.getURL(), showImage);
+							myEditor.getURL	(), showImage);
 					image.setUniqId(myEditor.getID());
 
 					OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler() {

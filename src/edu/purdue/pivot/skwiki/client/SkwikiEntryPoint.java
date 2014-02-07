@@ -23,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -645,7 +646,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 
 				});
 
-		menuPanel.setWidget(3, 0, widgets.settings_panel);
+		menuPanel.setWidget(4, 0, widgets.settings_panel);
 
 		// text
 		ImgButton text_button = new ImgButton();
@@ -692,22 +693,35 @@ public class SkwikiEntryPoint implements EntryPoint {
 		//
 		// });
 		//
-		// // image
-		// Image image_image = new Image("images/image.png");
-		// Button image = new Button();
-		// image.getElement().appendChild(image_image.getElement());
-		// image.setStyleName("gwt-ButtonWidget");
-		// optionsPanel.add(image);
-		// image.setSize(65 + "px", 65 + "px");
-		// menuPanel.setWidget(2, 2, image);
-		//
-		// image.addClickHandler(new ClickHandler() {
-		// @Override
-		// public void onClick(ClickEvent event) {
-		// String imageEditorUUID = UUID.uuid(8, 16);
-		// widgets.addImage("Image" + imageEditorUUID);
-		// }
-		// });
+		 
+		// image
+		ImgButton image_button = new ImgButton();
+		image_button.setWidth(48);
+		image_button.setHeight(48);
+		image_button.setSrc("image.png");
+		image_button.setShadowSoftness(6);
+		image_button.setShadowOffset(16);
+		image_button.updateShadow();
+		image_button.setLabelHPad(5);
+		image_button.setLabelVPad(10);
+		menuPanel.setWidget(3, 0, image_button);
+
+//		Image image_image = new Image("images/image.png");
+//		Button image = new Button();
+//		image.getElement().appendChild(image_image.getElement());
+//		image.setStyleName("gwt-ButtonWidget");
+//		image.setSize(65 + "px", 65 + "px");
+//		menuPanel.setWidget(2, 2, image);
+		
+		image_button
+		.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+			@Override
+			public void onClick(
+					com.smartgwt.client.widgets.events.ClickEvent event) {
+					String imageEditorUUID = UUID.uuid(8, 16);
+					widgets.addImage("Image" + imageEditorUUID);
+		}
+		});
 
 		// path viewer
 		preview = new PreviewWidget(windowWidth / 4, windowHeight / 4,

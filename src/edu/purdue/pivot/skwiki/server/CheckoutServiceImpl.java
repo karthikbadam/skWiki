@@ -696,10 +696,14 @@ CheckoutService {
 					{
 						tempEntityHistory
 						= new CreateEntityHistory(object, EditorType.CANVAS);
-					}else 
+					} else if(entity_type.equals("TEXT"))
 					{
 						tempEntityHistory
 						= new CreateEntityHistory(object, EditorType.TEXT);
+					} else if(entity_type.equals("IMAGE"))
+					{
+						tempEntityHistory
+						= new CreateEntityHistory(object, EditorType.IMAGE);
 					}
 				}else if(type.equals("a"))
 				{

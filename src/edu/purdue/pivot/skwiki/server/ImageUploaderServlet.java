@@ -30,6 +30,11 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
@@ -54,6 +59,7 @@ public class ImageUploaderServlet extends UploadAction {
 	 * Maintain a list with received files and their content types.
 	 */
 	Hashtable<String, File> receivedFiles = new Hashtable<String, File>();
+	Hashtable<String, String> receivedFilePaths = new Hashtable<String, String>();
 
 	/**
 	 * Override executeAction to save the received files in a custom place and
@@ -62,6 +68,45 @@ public class ImageUploaderServlet extends UploadAction {
 	@Override
 	public String executeAction(HttpServletRequest request,
 			List<FileItem> sessionFiles) throws UploadActionException {
+		
+		Connection connection = null;
+		Statement st = null;
+		ResultSet rs = null;
+		ResultSet rst = null;
+		//	ArrayList<Integer> revisionHistoryList = new ArrayList<Integer>();
+
+		System.out.println("Checking out service start~~~~~~~~~~~~~~~");
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://127.0.0.1:5432/postchi_testing", "postgres",
+					"fujiko");
+
+			//int targetRevision = input.updateRevision;
+			//int nonWholeSequence_id = input.nonWholeSequence_id;
+
+
+			int directFromRevision = 0;
+
+//			String selectStr = "select from_revision from currentrevision where revision = "
+//					+targetRevision;
+//			//revisionHistoryList.add(targetRevision);
+//			System.out.println("targetRevision "+targetRevision);
+//			st = connection.createStatement();
+//			rs = st.executeQuery(selectStr);
+//
+//			while(rs.next())
+//			{
+//				directFromRevision = rs.getInt(1);
+//
+//				//canvasNameList.add(id);
+//			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		String response = "";
 		int cont = 0;
@@ -87,6 +132,8 @@ public class ImageUploaderServlet extends UploadAction {
 					String saveName = uuid + '.'
 							+ FilenameUtils.getExtension(item.getName());
 					
+					//write to database
+					
 					File file = new File(saveName);
 					item.write(file);
 
@@ -94,6 +141,7 @@ public class ImageUploaderServlet extends UploadAction {
 					receivedFiles.put(item.getFieldName(), file);
 					receivedContentTypes.put(item.getFieldName(),
 							item.getContentType());
+					receivedFilePaths.put(item.getFieldName(), file.getAbsolutePath());
 
 					// / Send a customized message to the client.
 					response += "File saved as " + file.getAbsolutePath();
@@ -118,7 +166,9 @@ public class ImageUploaderServlet extends UploadAction {
 	public void getUploadedFile(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		String fieldName = request.getParameter(UConsts.PARAM_SHOW);
-		File f = receivedFiles.get(fieldName);
+		//File f = receivedFiles.get(fieldName);
+		
+		File f = new File(receivedFilePaths.get(fieldName));
 		if (f != null) {
 			response.setContentType(receivedContentTypes.get(fieldName));
 			FileInputStream is = new FileInputStream(f);
