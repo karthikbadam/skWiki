@@ -93,7 +93,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 	Vector2 p2 = new Vector2();
 	Vector2 p3 = new Vector2();
 	int strokePointCount = 0;
-	int bufferCount = 13;
+	int bufferCount = 7;
 
 	// context2d
 	Context2d canvas_context;
@@ -224,8 +224,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 						canvas_context.setStrokeStyle(currentColor
 								.getColorCode());
 						canvas_context.setFillStyle(currentColor.getColorCode());
-						canvas_context
-								.setLineWidth(((double) strokeSize) * 0.4);
+						canvas_context.setLineWidth(((double) strokeSize) * 0.4);
 						canvas_context.beginPath();
 						canvas_context.arc(x, y, ((double) strokeSize) * 0.4,
 								0, 2 * Math.PI);
@@ -299,11 +298,11 @@ public class TouchPad extends Surface implements AttachedPanel {
 								.getColorCode());
 						canvas_context.setFillStyle(currentColor.getColorCode());
 						canvas_context
-								.setLineWidth(((double) strokeSize) * 0.4);
+								.setLineWidth(((double) strokeSize) * 0.3);
 						canvas_context.setLineCap(LineCap.ROUND);
 						canvas_context.setLineJoin(LineJoin.ROUND);
 						canvas_context
-								.setShadowBlur(((double) strokeSize) * 0.5);
+								.setShadowBlur(((double) strokeSize) * 0.7);
 						canvas_context.setShadowColor(currentColor
 								.getColorCode());
 						p3.x = x;
@@ -608,11 +607,11 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 					canvas_context.setStrokeStyle(pathColor.getColorCode());
 					canvas_context.setFillStyle(pathColor.getColorCode());
-					canvas_context.setLineWidth(((double) strokeSize) * 0.4);
+					canvas_context.setLineWidth(((double) strokeSize) * 0.3);
 					canvas_context.setLineCap(LineCap.ROUND);
 					canvas_context.setLineJoin(LineJoin.ROUND);
-					canvas_context.setShadowBlur(((double) strokeSize) * 0.5);
-					canvas_context.setShadowColor(currentColor.getColorCode());
+					canvas_context.setShadowBlur(((double) strokeSize) * 0.7);
+					canvas_context.setShadowColor(pathColor.getColorCode());
 					p3.x = x;
 					p3.y = y;
 					p0.x = p1.x + (p1.x - p2.x);
