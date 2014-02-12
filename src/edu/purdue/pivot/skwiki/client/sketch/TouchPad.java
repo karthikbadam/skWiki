@@ -93,7 +93,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 	Vector2 p2 = new Vector2();
 	Vector2 p3 = new Vector2();
 	int strokePointCount = 0;
-	int bufferCount = 7;
+	int bufferCount = 5;
 
 	// context2d
 	Context2d canvas_context;
@@ -310,6 +310,10 @@ public class TouchPad extends Surface implements AttachedPanel {
 						p0.x = p1.x + (p1.x - p2.x);
 						p0.y = p1.y + (p1.y - p2.y);
 						strokePointCount++;
+						canvas_context.beginPath(); 
+						canvas_context.moveTo(p2.x,  p2.y);
+						canvas_context.lineTo(p3.x, p3.y);
+						canvas_context.stroke();
 
 						ArrayList<Vector2> buffList = get_buffer(p0, p1, p2,
 								p3, bufferCount);
@@ -360,6 +364,10 @@ public class TouchPad extends Surface implements AttachedPanel {
 						p2.y = p3.y;
 						p3.x = x;
 						p3.y = y;
+//						canvas_context.beginPath(); 
+//						canvas_context.moveTo(p2.x,  p2.y);
+//						canvas_context.lineTo(p3.x, p3.y);
+//						canvas_context.stroke();
 
 						ArrayList<Vector2> buffList = get_buffer(p0, p1, p2,
 								p3, bufferCount);
@@ -829,9 +837,9 @@ public class TouchPad extends Surface implements AttachedPanel {
 		redraw(myHistoryManager);
 	}
 	
-//	public void redraw() {
-//		redraw(myHistoryManager);
-//	}
+	public void redraw() {
+		redraw(myHistoryManager);
+    }
 
 	@Override
 	public String getID() {

@@ -17,6 +17,8 @@ import edu.purdue.pivot.skwiki.shared.ChangeSizeHistory;
 import edu.purdue.pivot.skwiki.shared.CreateEntityHistory;
 import edu.purdue.pivot.skwiki.shared.DataPack;
 import edu.purdue.pivot.skwiki.shared.EditorType;
+import edu.purdue.pivot.skwiki.shared.ImagePack;
+import edu.purdue.pivot.skwiki.shared.RevisionHistory;
 import edu.purdue.pivot.skwiki.shared.history.AbstractHistory;
 import edu.purdue.pivot.skwiki.shared.history.AddHistory;
 import edu.purdue.pivot.skwiki.shared.history.MyColor;
@@ -324,7 +326,7 @@ CheckoutService {
 					while(rs.next())
 					{
 						/*entity_name = rs.getString(2);
-					last_revision = rs.getInt(4);
+						last_revision = rs.getInt(4);
 						 */
 
 						entity_name = rs.getString(2);
@@ -424,12 +426,81 @@ CheckoutService {
 			System.out.println(tempLayoutHistory.toString());
 
 		}
+		checkoutImage(input, input.updateRevision, result);
+		
 		result.fromUID = input.id;
 		return result;
 	}
 
 
+	private void checkoutImage(DataPack input, int revision, DataPack result) {
 
+		ImagePack imagePack;
+
+		try {
+
+			Class.forName("org.postgresql.Driver");
+
+		} catch (ClassNotFoundException e) {
+
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+
+		}
+
+		Connection connection = null;
+		Statement st = null;
+		ResultSet rs = null;
+		ResultSet rst = null;
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://127.0.0.1:5432/postchi_testing", "postgres",
+					"fujiko");
+			st = connection.createStatement();
+			String selectTextStr = "select * from image_"
+					+ revision;
+			ResultSet imageRs = st.executeQuery(selectTextStr);
+
+			while (imageRs.next()) {
+				String key = imageRs.getString(1);
+				double leftX = (double) imageRs.getFloat(3);
+				double topY = (double) imageRs.getFloat(4);
+				int width = imageRs.getInt(5);
+				int height = imageRs.getInt(6);
+				int layoutWidth = imageRs.getInt(7);
+				int layoutHeight = imageRs.getInt(8);
+				String url = imageRs.getString(9);
+				imagePack = new ImagePack(url, leftX, topY, width, height,
+						layoutWidth, layoutHeight, key);
+				result.updateImageMap.put(key, imagePack);
+			}
+
+		} catch (SQLException e) {
+
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+	}
 
 
 
@@ -703,9 +774,9 @@ CheckoutService {
 					} else if(entity_type.equals("IMAGE"))
 					{
 						tempEntityHistory
-						= new CreateEntityHistory(object, EditorType.IMAGE);
+						= new CreateEntityHistory(object, EditorType.IMAGE);		
 					}
-				}else if(type.equals("a"))
+				} else if(type.equals("a"))
 				{
 					tempEntityHistory = 
 							new AddToParentHistory(object, parentName);

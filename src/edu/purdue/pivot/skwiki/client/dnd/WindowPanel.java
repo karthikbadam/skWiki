@@ -120,6 +120,8 @@ final public class WindowPanel extends FocusPanel {
 
 	private static final int BORDER_THICKNESS = 10;
 
+	private static final int BORDER_THICKNESS2 = 30;
+
 	private static final String CSS_DEMO_RESIZE_EDGE = "demo-resize-edge";
 
 	private static final String CSS_DEMO_RESIZE_PANEL = "demo-WindowPanel";
@@ -261,7 +263,7 @@ final public class WindowPanel extends FocusPanel {
 		if (contentPanel instanceof Surface) {
 			((TouchPad)contentPanel).clear();
 			((TouchPad)contentPanel).setSize(width, height);
-			//((TouchPad)contentPanel).redraw();
+			((TouchPad)contentPanel).redraw();
 		}
 		else {
 		contentPanel.setHeight(height+"px");
@@ -272,7 +274,7 @@ final public class WindowPanel extends FocusPanel {
 	private Widget setupCell(int row, int col, DirectionConstant direction) {
 		final FocusPanel widget = new FocusPanel();
 		widget.getElement().setAttribute("background-color", "#E7E8F0");
-		widget.setPixelSize(BORDER_THICKNESS, BORDER_THICKNESS);
+		widget.setPixelSize(BORDER_THICKNESS2, BORDER_THICKNESS2);
 		grid.setWidget(row, col, widget);
 		windowController.getResizeDragController().makeDraggable(widget,
 				direction);

@@ -65,11 +65,13 @@ public class ImageUploaderServlet extends UploadAction {
 	 * Override executeAction to save the received files in a custom place and
 	 * delete this items from session.
 	 */
+	
+	Connection connection; 
 	@Override
 	public String executeAction(HttpServletRequest request,
 			List<FileItem> sessionFiles) throws UploadActionException {
 		
-		Connection connection = null;
+		connection = null;
 		Statement st = null;
 		ResultSet rs = null;
 		ResultSet rst = null;
@@ -129,11 +131,12 @@ public class ImageUploaderServlet extends UploadAction {
 					// / Create a temporary file placed in the default system
 					// temp folder
 					String uuid = UUID.randomUUID().toString();
-					String saveName = uuid + '.'
-							+ FilenameUtils.getExtension(item.getName());
+//					String saveName = uuid + '.'
+//							+ FilenameUtils.getExtension(item.getName());
+//					
+					String saveName = item.getName();
 					
 					//write to database
-					
 					File file = new File(saveName);
 					item.write(file);
 
@@ -145,6 +148,12 @@ public class ImageUploaderServlet extends UploadAction {
 
 					// / Send a customized message to the client.
 					response += "File saved as " + file.getAbsolutePath();
+					
+					//write filename to database
+					
+					String selectStr = "insert into images values ("+"\'" + item.getFieldName() + "\'," + "\'" + file.getAbsolutePath() + "\'" + ")";
+					st = connection.createStatement();
+					int textReturnCode = st.executeUpdate(selectStr);
 
 				} catch (Exception e) {
 					throw new UploadActionException(e.getMessage());
@@ -168,7 +177,25 @@ public class ImageUploaderServlet extends UploadAction {
 		String fieldName = request.getParameter(UConsts.PARAM_SHOW);
 		//File f = receivedFiles.get(fieldName);
 		
-		File f = new File(receivedFilePaths.get(fieldName));
+		String selectStr = "select path from images where field_name = \'"+fieldName+"\'";
+		Statement st = null;
+		ResultSet rs = null;
+		ResultSet rst = null;
+		String receivedFilePath = receivedFilePaths.get(fieldName);
+		
+		try {
+			st = connection.createStatement();
+			rs = st.executeQuery(selectStr);
+			while(rs.next())
+			{
+				receivedFilePath = rs.getString(1);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			
+		File f = new File(receivedFilePath);
 		if (f != null) {
 			response.setContentType(receivedContentTypes.get(fieldName));
 			FileInputStream is = new FileInputStream(f);

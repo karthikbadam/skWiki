@@ -16,6 +16,7 @@ import edu.purdue.pivot.skwiki.shared.ChangePosHistory;
 import edu.purdue.pivot.skwiki.shared.ChangeSizeHistory;
 import edu.purdue.pivot.skwiki.shared.CreateEntityHistory;
 import edu.purdue.pivot.skwiki.shared.DataPack;
+import edu.purdue.pivot.skwiki.shared.ImagePack;
 import edu.purdue.pivot.skwiki.shared.history.AbstractHistory;
 import edu.purdue.pivot.skwiki.shared.history.AddHistory;
 import edu.purdue.pivot.skwiki.shared.history.PathHeadHistory;
@@ -124,6 +125,18 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 						"_" + newRevision + "(" + "id varchar(50),"
 						+ "subrevision int," + "" + "textbody varchar(20000)"
 						+ ");");
+				
+				// ******* create image table 
+				st = connection.createStatement();
+				createCode = st.executeUpdate("CREATE table image"
+						+
+						// "_"+id+
+						"_" + newRevision + "(" + "id varchar(50),"
+						+ "subrevision int," + "pox_x int," + "pox_y int," 
+						+ "width int," + "height int," 
+						+ "size_x int," + "size_y int," + "URL varchar(20000)"
+						+ ");");
+				
 
 				/*
 				 * st = connection.createStatement(); createCode =
@@ -766,6 +779,13 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 			// ****** update the return package
 		}
 
+		/* Commit images */
+		for (int i = 0; i < input.updateImageMap.size(); i++) {
+			String key = (String) input.updateImageMap.keySet().toArray()[i];
+			ImagePack tempImagePack = input.updateImageMap.get(key);
+			commitOneImage(key, newRevision, tempImagePack);
+		}
+		
 		// ******** commit tags
 		updateTags(input);
 
@@ -1177,6 +1197,69 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		}
 
 	}
+	
+	public void commitOneImage(String key, int newRevision, ImagePack imagePack) {
+
+		String id = key;
+		try {
+
+			Class.forName("org.postgresql.Driver");
+
+		} catch (ClassNotFoundException e) {
+
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+
+		}
+
+		Connection connection = null;
+		Statement st = null;
+		ResultSet rs = null;
+		ResultSet rst = null;
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"postgres", "fujiko");
+			st = connection.createStatement();
+
+			String insertHead = "insert into ";
+			String insertTable = "image_" + newRevision + " ";
+			String values = "values " + "(" + "\'" + id + "\', " + newRevision
+					+ ", " + imagePack.leftX + "," + imagePack.topY + ", "
+					+ imagePack.width + "," + imagePack.height + ","
+					+ imagePack.layoutWidth + "," + imagePack.layoutHeight
+					+ ",\' " + imagePack.URL + "\'" + ")";
+			
+			int imageReturnCode = st.executeUpdate(insertHead + insertTable
+					+ values);
+
+		} catch (SQLException e) {
+
+			System.out.println("Connection Failed! Check output console");
+			e.printStackTrace();
+
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+
+				// } catch (SQLException ex) {
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
 
 	public CanvasPack commitOneCanvas(CanvasPack input, String fromUID,
 			int newRevision, String UID) throws IllegalArgumentException {
