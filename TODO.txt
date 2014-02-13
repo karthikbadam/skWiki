@@ -2,7 +2,7 @@ sWiki Fixes to do
 [] Right now there are different line weight/ line colour settings for
     individual canvases, which is confusing. Instead, have a single
     settings dialog for both, and apply it to all canvases. 
-[] Clearly identify the active canvas
+[X] Clearly identify the active canvas
 [] Provision to delete/hide canvases?
 [X] A preview of the sketch should show its active canvas, or all
     canvases. The study with ME 444 had it showing the preview of the
