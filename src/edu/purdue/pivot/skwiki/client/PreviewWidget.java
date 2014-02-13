@@ -79,59 +79,17 @@ public class PreviewWidget extends ScrollPanel {
 		final MyCanvasEditor canvasEditor = new MyCanvasEditor(id, "user",
 				scaleWidth, scaleHeight, windowWidth, windowHeight);
 		TouchPad myCanvas = canvasEditor.getSurface();
-
-		// copy option
-		myCanvas.addDoubleClickHandler(new DoubleClickHandler() {
-
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-					
-			}
-			
-
-		});
-//		
-//		myCanvas.addTouchStartHandler(new TouchStartHandler(){
-//
-//			@Override
-//			public void onTouchStart(TouchStartEvent event) {
-//				DialogBox popup = new DialogBox();
-//				Button ok = new Button("OK");
-//				Button cancel = new Button("Cancel");
-//				HorizontalPanel okcancel = new HorizontalPanel();
-//				okcancel.add(ok);
-//				okcancel.add(cancel);
-//				
-//				VerticalPanel panel = new VerticalPanel();
-//				panel.add(new Label("Are you sure you want to copy this element?"));
-//				panel.add(okcancel);
-//				popup.add(panel);
-//				
-//				ok.addClickHandler(new ClickHandler(){
-//
-//					@Override
-//					public void onClick(ClickEvent event) {
-//						Window.alert("copied");
-//						skWiki.widgets.addCanvas(id2, 0);
-//						
-//					}
-//					
-//				});
-//			}
-//			
-//		});
-
+		
 		myCanvas.setStyleName("gwt-TouchPanelWidget");
 		boundaryPanel.add(myCanvas);
-		canvasEditor.updateEditor(result);
 
 		for (AbstractLayoutHistory tempLayoutHistory : layoutHistoryList) {
 			if (tempLayoutHistory instanceof ChangePosHistory) {
 				if (id == ((ChangePosHistory) tempLayoutHistory)
 						.getOperatingObject()) {
 
-					int left = ((ChangePosHistory) tempLayoutHistory).getNewX();
-					int top = ((ChangePosHistory) tempLayoutHistory).getNewY();
+					int left = ((ChangePosHistory) tempLayoutHistory).getNewX() + 30;
+					int top = ((ChangePosHistory) tempLayoutHistory).getNewY() + 30;
 					// Window.alert("" + left + ", " + top);
 					boundaryPanel.setWidgetPosition(myCanvas,
 							(int) (left * scaleWidth),
@@ -143,17 +101,20 @@ public class PreviewWidget extends ScrollPanel {
 				if (id == ((ChangeSizeHistory) tempLayoutHistory)
 						.getOperatingObject()) {
 
-					int width = ((ChangeSizeHistory) tempLayoutHistory)
-							.getNewX();
-					int height = ((ChangeSizeHistory) tempLayoutHistory)
-							.getNewY();
-					
+					int width = (int)((int)(((ChangeSizeHistory) tempLayoutHistory)
+							.getNewX())*scaleWidth);
+					int height = (int)((int)(((ChangeSizeHistory) tempLayoutHistory)
+							.getNewY())*scaleHeight);
+					System.out.println("Resize - "+width+", "+height);
 					//myCanvas.setHeight(height+"px");
 					//myCanvas.setWidth(width+"px");
+					myCanvas.clear();
+					myCanvas.setSize(width, height);
 					//boundaryPanel.setContentSize(width, height);
 				}
 			}
 		}
+		canvasEditor.updateEditor(result);
 
 	}
 

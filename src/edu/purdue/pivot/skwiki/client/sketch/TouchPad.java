@@ -544,11 +544,6 @@ public class TouchPad extends Surface implements AttachedPanel {
 		return toolbar;
 	}
 
-	protected boolean isCursorResize(int x, int y) {
-
-		return false;
-	}
-
 	public void updateDataPack(DataPack data, int startIndex) {
 		int i = 0;
 		for (AbstractHistory tempHistory : myHistoryManager.historys) {
