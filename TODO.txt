@@ -8,9 +8,9 @@ sWiki Fixes to do
     canvases. The study with ME 444 had it showing the preview of the
     first canvas created, which persisted even after the canvas was
     minimized.
-[] Time of last save: change it to "x minutes ago" instead of absolute
+[X] Time of last save: change it to "x minutes ago" instead of absolute
     time.
-[] Increase handle sizes on path viewer
+[X] Increase handle sizes on path viewer
 [X] When the path viewer windows moves over other buttons (All Projects,
     Take Screenshot, Logout), clicking on the path viewer accidentally
     clicks these buttons.
