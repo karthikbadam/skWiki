@@ -97,6 +97,12 @@ public class SkwikiEntryPoint implements EntryPoint {
 	String name;
 	public TextBox Log = new TextBox();
 
+	
+	// Last save
+	Date lastTime = new Date();
+	public final static long SECOND_MILLIS = 1000;
+	public final static long MINUTE_MILLIS = SECOND_MILLIS*60;
+	
 	// Widget manager
 
 	public WidgetManager widgets;
@@ -1067,7 +1073,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 							pathViewer.setVisible(true);
 							navigationWin.setLeft(windowWidth
 									- navigationWin.getWidth() - 30);
-							navigationWin.setTop(10);
+							navigationWin.setTop(60);
 
 						} else if (navigationWin.isVisible()) {
 							navigationWin.hide();
@@ -1095,7 +1101,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		Log.setSize(400 + "px", 14 + "px");
 		rootPanel.add(Log, 10, windowHeight - 20);
 
-		// commit every 120 sec
+		// commit every 20 sec
 		final Timer timer = new Timer() {
 			@Override
 			public void run() {
@@ -1110,11 +1116,22 @@ public class SkwikiEntryPoint implements EntryPoint {
 				// }
 				// }
 				// });
+				Date date = new Date();
+				int diff = minutesDiff(lastTime, date);
+				
+				Log.setText("Last Saved "+diff+" min ago");
 			}
 		};
-		timer.scheduleRepeating(1000 * 120);
+		timer.scheduleRepeating(1000 * 60);
 	}
 
+ public static int minutesDiff( Date earlierDate, Date laterDate ) {
+    if( earlierDate == null || laterDate == null ) return 0;
+    
+    return (int)((laterDate.getTime()/MINUTE_MILLIS) - (earlierDate.getTime()/MINUTE_MILLIS));
+ }
+    
+	
 	class CommitHandler implements ClickHandler {
 		/**
 		 * Fired when the user clicks on the commitButton.
@@ -1186,10 +1203,13 @@ public class SkwikiEntryPoint implements EntryPoint {
 										.getFormat("yyyy/MM/dd:HH:mm:ss");
 
 								widgets.layoutSettleIndex += result.layoutHisotrySettleIndex;
-
+								
 								Log.setText("GWT Success: Successfully commited at "
 										+ dtf.format(date,
 												TimeZone.createTimeZone(240)));
+								
+								lastTime = date;
+								
 								// show the commit result, update the
 								// information label;
 								for (MyCanvasEditor tempCanvasEditor : widgets.canvasEditors) {

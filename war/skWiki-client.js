@@ -41,9 +41,11 @@ $(document).ready(function() {
 	$("#screenshot-button").click(function() {
 		html2canvas(document.getElementById("skwiki-viewer"), {
 		  onrendered: function(canvas) {
-		    var w = window.open('about:blank','image from canvas');
+			var context = canvas.getContext('2d');
+			context.translate(-30, -30);
+	        var w = window.open('about:blank','image from canvas');
 			w.document.write("<img src='"+canvas.toDataURL("image/png")+"' alt='from canvas'/>");
-		  }
+		 }
 		});
 	});
 	

@@ -4,6 +4,17 @@
 	border: 2px solid rgba(209, 203, 186, .0);
 }
 
+.demo-WindowExample .demo-WindowPanel:hover {
+	background-color: rgba(209, 203, 186, .0);
+	border: 2px solid rgba(209, 203, 186, .5);
+}
+
+.demo-WindowExample .demo-WindowPanel:active {
+	background-color: rgba(209, 203, 186, .0);
+	border: 2px solid rgba(209, 203, 186, .75);
+	z-index: 100;
+}
+
 .demo-WindowExample .demo-WindowPanel .window-focus {
 	background-color: rgba(209, 203, 186, .05);
 	border: 0px solid rgba(209, 203, 186, .25);
@@ -92,43 +103,83 @@
 
 .demo-WindowExample .demo-resize-nw .dragdrop-handle {
 	cursor: nw-resize;
+	background-color: rgba(209, 203, 186, .1);
+}
+
+.demo-WindowExample .demo-resize-nw .dragdrop-handle:hover {
+	cursor: nw-resize;
+	background-color: rgba(209, 203, 186, .3);
+}
+
+.demo-WindowExample .demo-resize-nw .dragdrop-handle:active {
+	cursor: nw-resize;
 	background-color: rgba(209, 203, 186, .5);
 }
 
 .demo-WindowExample .demo-resize-n .dragdrop-handle {
 	cursor: n-resize;
-	background-color: rgba(209, 203, 186, 0.05);
+	background-color: rgba(209, 203, 186, 0.0);
 	float: bottom; 
 }
 
 .demo-WindowExample .demo-resize-ne .dragdrop-handle {
+	cursor: ne-resize;
+	background-color: rgba(209, 203, 186, .1);
+}
+
+.demo-WindowExample .demo-resize-ne .dragdrop-handle:hover {
+	cursor: ne-resize;
+	background-color: rgba(209, 203, 186, .3);
+}
+
+.demo-WindowExample .demo-resize-ne .dragdrop-handle:active {
 	cursor: ne-resize;
 	background-color: rgba(209, 203, 186, .5);
 }
 
 .demo-WindowExample .demo-resize-w .dragdrop-handle {
 	cursor: w-resize;
-	background-color: rgba(209, 203, 186, 0.05);
+	background-color: rgba(209, 203, 186, 0.0);
 	float: right;
 }
 
 .demo-WindowExample .demo-resize-e .dragdrop-handle {
 	cursor: e-resize;
-	background-color: rgba(209, 203, 186, 0.05);
+	background-color: rgba(209, 203, 186, 0.0);
 }
 
 .demo-WindowExample .demo-resize-sw .dragdrop-handle {
+	cursor: sw-resize;
+	background-color: rgba(209, 203, 186, .1);
+}
+
+.demo-WindowExample .demo-resize-sw .dragdrop-handle:hover {
+	cursor: sw-resize;
+	background-color: rgba(209, 203, 186, .3);
+}
+
+.demo-WindowExample .demo-resize-sw .dragdrop-handle:active {
 	cursor: sw-resize;
 	background-color: rgba(209, 203, 186, .5);
 }
 
 .demo-WindowExample .demo-resize-s .dragdrop-handle {
 	cursor: s-resize;
-	background-color: rgba(209, 203, 186, 0.05);
+	background-color: rgba(209, 203, 186, 0.0);
 	float: top;
 }
 
 .demo-WindowExample .demo-resize-se .dragdrop-handle {
 	cursor: se-resize;
+	background-color: rgba(209, 203, 186, .1);
+}
+
+.demo-WindowExample .demo-resize-sw .dragdrop-handle:hover {
+	cursor: sw-resize;
+	background-color: rgba(209, 203, 186, .3);
+}
+
+.demo-WindowExample .demo-resize-sw .dragdrop-handle:hover {
+	cursor: sw-resize;
 	background-color: rgba(209, 203, 186, .5);
 }

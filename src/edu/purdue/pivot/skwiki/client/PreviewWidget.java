@@ -44,9 +44,6 @@ public class PreviewWidget extends ScrollPanel {
 		this.windowHeight = windowHeight;
 		
 		this.boundaryPanel = new AbsolutePanel();
-//		int bWidth = (int) (1080.0 * scaleWidth);
-//		int bHeight = (int) (1800.0 * scaleHeight);
-//		System.out.println("Preview Height" + bWidth);
 		boundaryPanel.setSize((width - 10) + "px", (height - 10) + "px");
 		this.add(boundaryPanel);
 		//boundaryPanel.setStyleName("gwt-PanelWidget");
