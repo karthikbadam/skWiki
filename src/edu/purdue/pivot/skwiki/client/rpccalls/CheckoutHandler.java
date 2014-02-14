@@ -77,6 +77,7 @@ public class CheckoutHandler implements ClickHandler {
 		//Window.alert("Selected revision is: " + (revisionList.getSelectedIndex() + 1));
 		int wantedRevision = revisionHistory.get(revisionList.getSelectedIndex()).getRevision();
 		packtoSend.updateRevision = wantedRevision;// revisionList.getSelectedIndex()+1;
+		packtoSend.projectName = skWiki.current_project_name;
 		
 		
 		if(packtoSend.updateRevision<0)
@@ -156,6 +157,7 @@ public class CheckoutHandler implements ClickHandler {
 		//Window.alert("Selected revision is: " + (revisionList.getSelectedIndex() + 1));
 		int wantedRevision = revisionHistory.get(revisionList.getSelectedIndex()).getRevision();
 		packtoSend.updateRevision = wantedRevision;// revisionList.getSelectedIndex()+1;
+		packtoSend.projectName = skWiki.current_project_name;
 		
 		
 		if(packtoSend.updateRevision<0)

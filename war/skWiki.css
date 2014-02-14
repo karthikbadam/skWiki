@@ -181,6 +181,13 @@ input[type="text"], input[type="password"] {
 	font-size: 20px;
 }
 
+#header-options-left-image {
+	background-image: url(images/skwiki_icon.png);
+	background-repeat: no-repeat;
+	width: 80px;
+	height: 50px;
+}
+
 #header-options-right {
 	float: right;
 	width: 200px;

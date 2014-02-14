@@ -33,6 +33,7 @@ import edu.purdue.pivot.skwiki.shared.history.RemoveHistory;
 public class CheckoutServiceImpl extends RemoteServiceServlet implements
 		CheckoutService {
 	private String current_database_end = "";
+	private String current_project_name = "";
 
 	private String escapeHtml(String html) {
 		if (html == null) {
@@ -46,6 +47,8 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 	public DataPack checkout(DataPack input) throws IllegalArgumentException {
 		DataPack result = new DataPack();
 		current_database_end = input.id;
+		current_project_name = input.projectName;
+		
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -62,7 +65,7 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 
 			int targetRevision = input.updateRevision;
@@ -357,7 +360,7 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 			String selectTextStr = "select * from image_" + revision;
@@ -427,7 +430,7 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 
 			String selectStr = "select * from revisionhistory" + "_" + revision
@@ -552,7 +555,7 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 			String selectTextStr = "select * from layout_" + revision
@@ -643,7 +646,7 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -721,7 +724,7 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 
 		try {
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 

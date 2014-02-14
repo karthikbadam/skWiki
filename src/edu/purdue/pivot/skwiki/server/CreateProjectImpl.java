@@ -16,7 +16,7 @@ import edu.purdue.pivot.skwiki.shared.DataPack;
  */
 @SuppressWarnings("serial")
 public class CreateProjectImpl extends RemoteServiceServlet implements
-CreateProjectService{
+		CreateProjectService {
 
 	private String escapeHtml(String html) {
 		if (html == null) {
@@ -26,11 +26,10 @@ CreateProjectService{
 				.replaceAll(">", "&gt;");
 	}
 
-	public DataPack createProject(DataPack input) throws IllegalArgumentException {
+	public DataPack createProject(DataPack input)
+			throws IllegalArgumentException {
 
-		String returnInput = input.toString();
 		String id = input.id;
-		int checkoutRevision = input.updateRevision;
 
 		DataPack returnPack = new DataPack();
 
@@ -44,14 +43,12 @@ CreateProjectService{
 					+ "Include in your library path!");
 			e.printStackTrace();
 
-
 		}
 
-		System.out.println("id:  "+input.id+"");
+		System.out.println("id:  " + input.id + "");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-
 
 		try {
 
@@ -59,71 +56,47 @@ CreateProjectService{
 					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
 					"fujiko");
 			st = connection.createStatement();
-
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
-			int returnCode = st.executeUpdate(" insert into  "+" projects  values ( "
-					+"\'"+input.projectInfo.projectName+"\', "
-					+"\'"+input.projectInfo.projectDescription+"\' "
-					+" );" );
+			
+			/* insert into projects */
+			int returnCode = st.executeUpdate(" insert into  "
+					+ " projects  values ( " + "\'"
+					+ input.projectInfo.projectName + "\', " + "\'"
+					+ input.projectInfo.projectDescription + "\' " + " );");
 
 			st = connection.createStatement();
+			
+			/* insert project-user details */
+			returnCode = st.executeUpdate(" insert into  "
+					+ " user_project  values ( " + "\'"
+					+ input.projectInfo.projectName + "\', " + "\'" + input.id
+					+ "\' " + " );");
 
+			/* create new database */
 			returnCode = st.executeUpdate(" create database  "
-					+input.projectInfo.projectName+" ;" );
+					+ input.projectInfo.projectName + " ;");
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/"+input.projectInfo.projectName, "postgres",
+					"jdbc:postgresql://127.0.0.1:5432/"
+							+ input.projectInfo.projectName, "postgres",
 					"fujiko");
-			
-			st = connection.createStatement();
 
-			returnCode = st.executeUpdate("create table currentrevision(" + 
-					"id varchar(20)," + 
-					"revision int," + 
-					"from_revision int," + 
-					"comment varchar(200)" + 
-					");" + 
-					"" + 
-					"create table tag(" + 
-					"revision int," + 
-					"uid varchar(50)," + 
-					"entity_type varchar(10)," + 
-					"entity_id varchar(30)," + 
-					"tag varchar(40)" + 
-					");" + 
-					"" + 
-					"" + 
-					"create table lastRevision(" + 
-					"uid varchar(50)," + 
-					"entity_id varchar(50)," + 
-					"workingrevision int," + 
-					"revision int," + 
-					"last_subRevision int," + 
-					"entity_type varchar(10)" + 
-					");" + 
-					"" + 
-					"create table subrevision_table(" + 
-					"uid varchar(50)," + 
-					"entity_id varchar(50)," + 
-					"revision int," + 
-					"last_subRevision int," + 
-					"entity_type varchar(10)," + 
-					"sequence_id int" + 
-					");");
-
-
-			/*rs = st.executeQuery("insert into  "+" projects  values ( "
-			         +"project name"+" )");
-			//int rowCount = 0;
-			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
-				returnPack.maxnonWholeSequence_id = rs.getInt(1);
-			}
-			System.out.println("max sequence_id "+ returnPack.maxnonWholeSequence_id);*/
-
+			/* add tables to the new database */
+			returnCode = st.executeUpdate("create table currentrevision("
+					+ "id varchar(20)," + "revision int,"
+					+ "from_revision int," + "comment varchar(200)" + ");" + ""
+					+ "create table tag(" + "revision int,"
+					+ "uid varchar(50)," + "entity_type varchar(10),"
+					+ "entity_id varchar(30)," + "tag varchar(40)" + ");" + "" 
+					+ "create table lastRevision(" + "uid varchar(50),"
+					+ "entity_id varchar(50)," + "workingrevision int,"
+					+ "revision int," + "last_subRevision int,"
+					+ "entity_type varchar(10)" + ");" + ""
+					+ "create table subrevision_table(" + "uid varchar(50),"
+					+ "entity_id varchar(50)," + "revision int,"
+					+ "last_subRevision int," + "entity_type varchar(10),"
+					+ "sequence_id int" + "); + " + ""
+					+ "create table images (" + "field_name varchar(50), "
+					+ "path varchar(50)" + ");");
 
 			returnPack.projectName = input.projectName;
 			returnPack.isSuccess = true;
@@ -133,8 +106,7 @@ CreateProjectService{
 			e.printStackTrace();
 			returnPack.isSuccess = false;
 
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					rs.close();
@@ -150,37 +122,12 @@ CreateProjectService{
 				ex.printStackTrace();
 			}
 		}
-
-
-		/*
-		for(AbstractHistory tempHistory: input.updatedHistory)
-		{
-			returnStr+=tempHistory.getType();
-		}
-
-
-		if(newID)
-		{
-			returnPack.newID = true;
-		}
-		else
-		{
-			returnPack.newID = false;
-
-		}*/
-		//return returnStr;
 		return returnPack;
 	}
 
 	public DataPack createUser(DataPack input) throws IllegalArgumentException {
 
-
-
-		System.out.println("checout Sub revision start");
-
 		DataPack returnPack = new DataPack();
-
-
 
 		try {
 
@@ -192,14 +139,12 @@ CreateProjectService{
 					+ "Include in your library path!");
 			e.printStackTrace();
 
-
 		}
 
-		System.out.println("id:  "+input.id+"");
+		System.out.println("id:  " + input.id + "");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-
 
 		try {
 
@@ -208,40 +153,22 @@ CreateProjectService{
 					"fujiko");
 			st = connection.createStatement();
 
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
-			int returnCode = st.executeUpdate(" insert into  "+" users  values ( "
-					+"\'"+input.userInfo.userName+"\', "
-					+"md5(\'"+input.userInfo.pwd+"\') "
-					+" );" );
-
-
-
-
-			/*rs = st.executeQuery("insert into  "+" projects  values ( "
-			         +"project name"+" )");
-			//int rowCount = 0;
-			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
-				returnPack.maxnonWholeSequence_id = rs.getInt(1);
-			}
-			System.out.println("max sequence_id "+ returnPack.maxnonWholeSequence_id);*/
+			/* insert new user */
+			int returnCode = st.executeUpdate(" insert into  "
+					+ " users  values ( " + "\'" + input.userInfo.userName
+					+ "\', " + "md5(\'" + input.userInfo.pwd + "\') " + " );");
 
 			returnPack.isSuccess = (returnCode >= 0);
 			returnPack.id = input.userInfo.userName;
-			
 			returnPack.projectName = input.projectName;
+			
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
 
-
-		}
-		finally {
+		} finally {
 			try {
 				if (rs != null) {
 					rs.close();
@@ -258,43 +185,13 @@ CreateProjectService{
 			}
 		}
 
-
-		/*
-		for(AbstractHistory tempHistory: input.updatedHistory)
-		{
-			returnStr+=tempHistory.getType();
-		}
-
-
-		if(newID)
-		{
-			returnPack.newID = true;
-		}
-		else
-		{
-			returnPack.newID = false;
-
-		}*/
-		//return returnStr;
 		return returnPack;
 	}
 
+	public DataPack authenticate(DataPack input)
+			throws IllegalArgumentException {
 
-	public DataPack authenticate(DataPack input) throws IllegalArgumentException {
-
-
-
-		System.out.println("checout Sub revision start");
-		String returnInput = input.toString();
-		String id = input.id;
-		int checkoutRevision = input.updateRevision;
-
-		//String returnStr = "";
-
-		//boolean newID = false;
 		DataPack returnPack = new DataPack();
-
-
 
 		try {
 
@@ -306,14 +203,11 @@ CreateProjectService{
 					+ "Include in your library path!");
 			e.printStackTrace();
 
-
 		}
 
-		System.out.println("id:  "+input.id+"");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-
 
 		try {
 
@@ -321,59 +215,30 @@ CreateProjectService{
 					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
 					"fujiko");
 			st = connection.createStatement();
-
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
-			/*int returnCode = st.executeUpdate(" insert into  "+" users  values ( "
-					+"\'"+input.userInfo.userName+"\', "
-					+"md5(\'"+input.userInfo.pwd+"\') "
-					+" );" );*/
-
-			rs = st.executeQuery("select count(*) from users where " +
-					"username = " +"\'"+input.userInfo.userName+"\' and "+
-					"pwd = " +"md5(\'"+input.userInfo.pwd+"\');");
-			int count =0;
+			
+			/* find if the user, password combination exists */
+			rs = st.executeQuery("select count(*) from users where "
+					+ "username = " + "\'" + input.userInfo.userName
+					+ "\' and " + "pwd = " + "md5(\'" + input.userInfo.pwd
+					+ "\');");
+			int count = 0;
 			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
 				count = rs.getInt(1);
 			}
-			if(count==1)
-			{
+			if (count == 1) {
 				returnPack.userInfo.authSuccess = true;
-			}
-			else
-				if(count==0)
-				{
-					returnPack.userInfo.authSuccess = false;
+			} else if (count == 0) {
+				returnPack.userInfo.authSuccess = false;
 
-				}
-			
+			}
+
 			returnPack.isSuccess = (count >= 0);
 			returnPack.id = input.userInfo.userName;
-
-			/*rs = st.executeQuery("insert into  "+" projects  values ( "
-			         +"project name"+" )");
-			//int rowCount = 0;
-			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
-				returnPack.maxnonWholeSequence_id = rs.getInt(1);
-			}
-			System.out.println("max sequence_id "+ returnPack.maxnonWholeSequence_id);*/
-
-
-			//returnPack.projectName = input.projectName;
 		} catch (SQLException e) {
-
-			//	System.out.println("Connection Failed! Check output console");
-
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
-			//	System.out.println(e);
-
-		}
-		finally {
+			
+		} finally {
 			try {
 				if (rs != null) {
 					rs.close();
@@ -389,44 +254,13 @@ CreateProjectService{
 				ex.printStackTrace();
 			}
 		}
-
-
-		/*
-		for(AbstractHistory tempHistory: input.updatedHistory)
-		{
-			returnStr+=tempHistory.getType();
-		}
-
-
-		if(newID)
-		{
-			returnPack.newID = true;
-		}
-		else
-		{
-			returnPack.newID = false;
-
-		}*/
-		//return returnStr;
 		return returnPack;
 	}
 
+	public DataPack getAllUserList(DataPack input)
+			throws IllegalArgumentException {
 
-	public DataPack getAllUserList(DataPack input) throws IllegalArgumentException {
-
-
-
-		System.out.println("checout Sub revision start");
-		String returnInput = input.toString();
-		String id = input.id;
-		int checkoutRevision = input.updateRevision;
-
-		//String returnStr = "";
-
-		//boolean newID = false;
 		DataPack returnPack = new DataPack();
-
-
 
 		try {
 
@@ -438,14 +272,11 @@ CreateProjectService{
 					+ "Include in your library path!");
 			e.printStackTrace();
 
-
 		}
 
-		System.out.println("id:  "+input.id+"");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-
 
 		try {
 
@@ -454,45 +285,18 @@ CreateProjectService{
 					"fujiko");
 			st = connection.createStatement();
 
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
-			/*int returnCode = st.executeUpdate(" insert into  "+" users  values ( "
-					+"\'"+input.userInfo.userName+"\', "
-					+"md5(\'"+input.userInfo.pwd+"\') "
-					+" );" );*/
-
+			/* get all user names */
 			rs = st.executeQuery("select username from users ");
-			
+
 			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
 				returnPack.userInfo.userList.add(rs.getString(1));
 			}
-			
 
-
-			/*rs = st.executeQuery("insert into  "+" projects  values ( "
-			         +"project name"+" )");
-			//int rowCount = 0;
-			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
-				returnPack.maxnonWholeSequence_id = rs.getInt(1);
-			}
-			System.out.println("max sequence_id "+ returnPack.maxnonWholeSequence_id);*/
-
-
-			//returnPack.projectName = input.projectName;
 		} catch (SQLException e) {
-
-			//	System.out.println("Connection Failed! Check output console");
-
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
-			//	System.out.println(e);
-
-		}
-		finally {
+		
+		} finally {
 			try {
 				if (rs != null) {
 					rs.close();
@@ -508,43 +312,15 @@ CreateProjectService{
 				ex.printStackTrace();
 			}
 		}
-
-
-		/*
-		for(AbstractHistory tempHistory: input.updatedHistory)
-		{
-			returnStr+=tempHistory.getType();
-		}
-
-
-		if(newID)
-		{
-			returnPack.newID = true;
-		}
-		else
-		{
-			returnPack.newID = false;
-
-		}*/
-		//return returnStr;
 		return returnPack;
 	}
 
-	public DataPack getAllProjectList(DataPack input) throws IllegalArgumentException {
+	public DataPack getAllProjectList(DataPack input)
+			throws IllegalArgumentException {
 
-		String returnInput = input.toString();
-		String id = input.id;
-		int checkoutRevision = input.updateRevision;
-
-		//String returnStr = "";'[
-
-		//boolean newID = false;
 		DataPack returnPack = new DataPack();
 
-
-
 		try {
-
 			Class.forName("org.postgresql.Driver");
 
 		} catch (ClassNotFoundException e) {
@@ -552,15 +328,11 @@ CreateProjectService{
 			System.out.println("Where is your PostgreSQL JDBC Driver? "
 					+ "Include in your library path!");
 			e.printStackTrace();
-
-
 		}
 
-		System.out.println("id:  "+input.id+"");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-
 
 		try {
 
@@ -569,47 +341,81 @@ CreateProjectService{
 					"fujiko");
 			st = connection.createStatement();
 
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
-			/*int returnCode = st.executeUpdate(" insert into  "+" users  values ( "
-					+"\'"+input.userInfo.userName+"\', "
-					+"md5(\'"+input.userInfo.pwd+"\') "
-					+" );" );*/
-
+			/* get project list */
 			rs = st.executeQuery("select * from projects ");
-			
+
 			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
 				returnPack.projectInfo.projectNameList.add(rs.getString(1));
 				returnPack.projectInfo.projectDescripList.add(rs.getString(2));
 			}
+
 			
-
-
-			/*rs = st.executeQuery("insert into  "+" projects  values ( "
-			         +"project name"+" )");
-			//int rowCount = 0;
-			while (rs.next()) {
-				//System.out.print(rs.getInt(1)+" ");
-				returnPack.maxnonWholeSequence_id = rs.getInt(1);
-			}
-			System.out.println("max sequence_id "+ returnPack.maxnonWholeSequence_id);*/
-
 			returnPack.isSuccess = true;
-			//returnPack.projectName = input.projectName;
+			
 		} catch (SQLException e) {
-
-			//	System.out.println("Connection Failed! Check output console");
-
+			
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
-			
-			//	System.out.println(e);
+
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return returnPack;
+	}
+
+	public DataPack addUserToProject(DataPack input)
+			throws IllegalArgumentException {
+
+		DataPack returnPack = new DataPack();
+		String username = input.id;
+		String project_name = input.projectName;
+
+		try {
+
+			Class.forName("org.postgresql.Driver");
+
+		} catch (ClassNotFoundException e) {
+
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
 
 		}
-		finally {
+
+		System.out.println("id:  " + input.id + "");
+		Connection connection = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
+					"fujiko");
+			st = connection.createStatement();
+			
+			/* insert user into user_project table */
+			int returnCode = st.executeUpdate("insert into  "
+					+ " user_project  values ( " + "\'" + username + "\'"
+					+ "\'" + project_name + "\'" + " )");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
 			try {
 				if (rs != null) {
 					rs.close();
@@ -626,26 +432,126 @@ CreateProjectService{
 			}
 		}
 
-
-		/*
-		for(AbstractHistory tempHistory: input.updatedHistory)
-		{
-			returnStr+=tempHistory.getType();
-		}
-
-
-		if(newID)
-		{
-			returnPack.newID = true;
-		}
-		else
-		{
-			returnPack.newID = false;
-
-		}*/
-		//return returnStr;
 		return returnPack;
 	}
 
-	
+	public DataPack removeUserFromProject(DataPack input)
+			throws IllegalArgumentException {
+
+		DataPack returnPack = new DataPack();
+		String userName = input.id;
+		String project_name = input.projectName;
+
+		try {
+
+			Class.forName("org.postgresql.Driver");
+
+		} catch (ClassNotFoundException e) {
+
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+
+		}
+
+		Connection connection = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
+					"fujiko");
+			st = connection.createStatement();
+
+			/* remove user from user_project */
+			int returnCode = st.executeUpdate(" remove from  "
+					+ " user_project  where  " + "user_name = \'" + userName
+					+ "\' and " + "project_name = \'" + project_name + "\' "
+					+ " ;");
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return returnPack;
+	}
+
+	boolean checkUserInProject(String user_name, String project_name) {
+		try {
+
+			Class.forName("org.postgresql.Driver");
+
+		} catch (ClassNotFoundException e) {
+
+			System.out.println("Where is your PostgreSQL JDBC Driver? "
+					+ "Include in your library path!");
+			e.printStackTrace();
+
+		}
+
+		Connection connection = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+
+			connection = DriverManager.getConnection(
+					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
+					"fujiko");
+			st = connection.createStatement();
+
+			/* check if user belongs to a project */
+			rs = st.executeQuery("select * from user_project where project_name = "
+					+ "\'"
+					+ project_name
+					+ "\' and "
+					+ "user_name  = "
+					+ "\'"
+					+ project_name + "\'" + ";");
+
+			while (rs.next()) {
+				return true;
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return false;
+	}
 }

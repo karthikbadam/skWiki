@@ -1,5 +1,5 @@
-sWiki Fixes to do
-[] Right now there are different line weight/ line colour settings for
+skWiki Fixes to do
+[] Right now there are different line weight/ line color settings for
     individual canvases, which is confusing. Instead, have a single
     settings dialog for both, and apply it to all canvases. 
 [X] Clearly identify the active canvas
@@ -14,5 +14,7 @@ sWiki Fixes to do
 [X] When the path viewer windows moves over other buttons (All Projects,
     Take Screenshot, Logout), clicking on the path viewer accidentally
     clicks these buttons.
-[] Server lag: may not be a fixable issue
+[] Slow resize and dnd operations especially once sketched 
+[X] Server lag: may not be a fixable issue
+[X] Fix Text upload
 

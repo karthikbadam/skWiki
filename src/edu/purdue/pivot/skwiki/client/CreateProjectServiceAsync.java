@@ -19,4 +19,10 @@ public interface CreateProjectServiceAsync {
 	
 	void getAllProjectList(DataPack input, AsyncCallback<DataPack> callback)
 			throws IllegalArgumentException;
+
+	void addUserToProject(DataPack input, AsyncCallback<DataPack> callback)
+			throws IllegalArgumentException;
+
+	void removeUserFromProject(DataPack input, AsyncCallback<DataPack> callback)
+			throws IllegalArgumentException;
 }

@@ -30,6 +30,8 @@ import edu.purdue.pivot.skwiki.shared.history.RemoveHistory;
 public class CommitServiceImpl extends RemoteServiceServlet implements
 		CommitService {
 
+	private String current_project_name = "";
+
 	private String escapeHtml(String html) {
 		if (html == null) {
 			return null;
@@ -322,6 +324,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 	public DataPack commit(DataPack input) throws IllegalArgumentException {
 
 		DataPack returnPack = new DataPack();
+		current_project_name = input.projectName;
 		String id = input.id; // user id
 		String fromUID = input.fromUID; // previous user id
 		int fromRevision = input.fromRevision; // parent revision
@@ -342,7 +345,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -468,7 +471,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -529,7 +532,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -677,7 +680,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -806,7 +809,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -872,7 +875,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 			String insertHead = "insert into ";

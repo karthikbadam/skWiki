@@ -99,7 +99,6 @@
 		<url-pattern>/skWiki/createProject</url-pattern>
 	</servlet-mapping>
 	
-	
 	<servlet>
 		<servlet-name>CheckProjectListServiceServlet</servlet-name>
 		<servlet-class>edu.purdue.pivot.skwiki.server.CheckProjectListServiceImpl</servlet-class>

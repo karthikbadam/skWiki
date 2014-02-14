@@ -9,8 +9,7 @@ public class Global {
 	public static List<String> COLORSCALE = Arrays.asList(new String[]{"#355FDE","#FFA700","#00C9A5","#242424"});
 	
 	//just some limits on the number of users and sketches -- can increase always 
-	public static int MAX_NUMBER_OF_USERS = 20; 
-	public static int MAX_NUMBER_OF_SKETCHES = 300;
-	
+	public static int MAX_NUMBER_OF_USERS = 200; 
+	public static int MAX_NUMBER_OF_SKETCHES = 3000;
 	
 }

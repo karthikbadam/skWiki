@@ -1,13 +1,10 @@
 package edu.purdue.pivot.skwiki.client;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JsArrayNumber;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,15 +20,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Label;
 //import com.googlecode.gwtphonegap.client.PhoneGap;
 //import com.googlecode.gwtphonegap.client.PhoneGapAvailableEvent;
@@ -84,7 +77,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 
 	private String uid = "";
 	public String fromUID = "";
-	String current_project_name = "postchi_testing";
+	public String current_project_name = "postchi_testing";
 
 	// from revision
 	public int fromRevision = 0;
@@ -96,7 +89,6 @@ public class SkwikiEntryPoint implements EntryPoint {
 
 	String name;
 	public TextBox Log = new TextBox();
-
 	
 	// Last save
 	Date lastTime = new Date();
@@ -104,7 +96,6 @@ public class SkwikiEntryPoint implements EntryPoint {
 	public final static long MINUTE_MILLIS = SECOND_MILLIS*60;
 	
 	// Widget manager
-
 	public WidgetManager widgets;
 
 	// Tag system
@@ -273,6 +264,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		ProjectPack tempProjecPack1 = new ProjectPack(projectName,
 				projectDescription);
 		packtoSend.projectInfo = tempProjecPack1;
+		packtoSend.id = uid; 
 
 		try {
 			createProjectRevService.createProject(packtoSend,
@@ -1146,6 +1138,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 			packtoSend.id = uid;
 			packtoSend.fromUID = fromUID;
 			packtoSend.comment = commentText.getText();
+			packtoSend.projectName = current_project_name;
 
 			if (uid.equals("")) {
 				Window.alert("login please");
@@ -1236,6 +1229,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		@Override
 		public void onClick(ClickEvent event) {
 			DataPack packtoSend = new DataPack();
+			packtoSend.projectName = current_project_name;
 			try {
 				// ServiceDefTarget endpoint = (ServiceDefTarget)
 				// checkIDService;

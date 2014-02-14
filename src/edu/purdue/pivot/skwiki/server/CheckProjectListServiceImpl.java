@@ -34,18 +34,13 @@ CheckProjectListService {
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
 
 
-		//input.dataPlus1();
 		System.err.println(input.updatedHistory.size()+"");
 		System.out.println("Server Side code");
 		String returnInput = input.toString();
 		userAgent = escapeHtml(userAgent);
 		String id = input.id;
 
-		//String returnStr = "";
-
-		//boolean newID = false;
 		DataPack returnPack = new DataPack();
-
 		String MAIN_DATABASE_NAME = "main";
 
 		try {

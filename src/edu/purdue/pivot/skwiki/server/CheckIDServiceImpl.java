@@ -19,6 +19,8 @@ import edu.purdue.pivot.skwiki.shared.RevisionHistory;
 public class CheckIDServiceImpl extends RemoteServiceServlet implements
 CheckIDService {
 
+	private String current_project_name = "";
+
 	private String escapeHtml(String html) {
 		if (html == null) {
 			return null;
@@ -33,7 +35,8 @@ CheckIDService {
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
 		userAgent = escapeHtml(userAgent);
 		DataPack returnPack = new DataPack();
-
+		current_project_name = input.projectName;
+		
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -50,7 +53,7 @@ CheckIDService {
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing", "postgres",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name, "postgres",
 					"fujiko");
 			st = connection.createStatement();
 		

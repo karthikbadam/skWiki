@@ -50,7 +50,8 @@ public class CheckoutAllHandler {
 			return;
 		}
 		packtoSend.revisionList = revisionHistory;
-
+		packtoSend.projectName = skWiki.current_project_name;
+		
 		try {
 			// ServiceDefTarget endpoint = (ServiceDefTarget)
 			// checkoutAllService;

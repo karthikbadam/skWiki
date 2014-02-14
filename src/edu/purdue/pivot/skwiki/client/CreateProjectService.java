@@ -14,5 +14,7 @@ public interface CreateProjectService extends RemoteService {
 	DataPack createUser(DataPack name) throws IllegalArgumentException;
 	DataPack authenticate(DataPack name) throws IllegalArgumentException;
 	DataPack getAllUserList(DataPack name) throws IllegalArgumentException;
-	DataPack getAllProjectList(DataPack input) throws IllegalArgumentException;
+	DataPack getAllProjectList(DataPack name) throws IllegalArgumentException;
+	DataPack addUserToProject(DataPack name) throws IllegalArgumentException;
+	DataPack removeUserFromProject(DataPack name) throws IllegalArgumentException;
 }
