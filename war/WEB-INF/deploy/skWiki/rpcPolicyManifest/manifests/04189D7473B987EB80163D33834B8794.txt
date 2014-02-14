@@ -1,0 +1,2 @@
+serviceClass: edu.purdue.pivot.skwiki.client.CreateProjectService
+path: C5A19491B5CF17F2C50560165D5469DE.gwt.rpc

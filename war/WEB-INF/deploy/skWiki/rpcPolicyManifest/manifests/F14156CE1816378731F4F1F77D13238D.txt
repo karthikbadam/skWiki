@@ -1,0 +1,2 @@
+serviceClass: edu.purdue.pivot.skwiki.client.GetAllRevService
+path: 3781FF214468960CFAEF34122A91D142.gwt.rpc

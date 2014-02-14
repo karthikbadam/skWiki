@@ -295,7 +295,7 @@ public class RichTextToolbar extends Composite {
 		this.richText = richText;
 		this.basic = richText.getBasicFormatter();
 		this.extended = richText.getExtendedFormatter();
-		basic.setFontSize(fontSizesConstants[4]);
+		//basic.setFontSize(fontSizesConstants[4]);
 		outer.add(topPanel);
 		outer.add(bottomPanel);
 		outer.setWidth(130 + "px");

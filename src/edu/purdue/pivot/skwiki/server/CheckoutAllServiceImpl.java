@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
 import edu.purdue.pivot.skwiki.client.CheckoutAllService;
 import edu.purdue.pivot.skwiki.shared.AbstractLayoutHistory;
 import edu.purdue.pivot.skwiki.shared.AddToParentHistory;
@@ -18,7 +16,8 @@ import edu.purdue.pivot.skwiki.shared.ChangeSizeHistory;
 import edu.purdue.pivot.skwiki.shared.CreateEntityHistory;
 import edu.purdue.pivot.skwiki.shared.DataPack;
 import edu.purdue.pivot.skwiki.shared.EditorType;
-import edu.purdue.pivot.skwiki.shared.RevisionHistory;
+import edu.purdue.pivot.skwiki.shared.Patch;
+import edu.purdue.pivot.skwiki.shared.TextPack;
 import edu.purdue.pivot.skwiki.shared.history.AbstractHistory;
 import edu.purdue.pivot.skwiki.shared.history.AddHistory;
 import edu.purdue.pivot.skwiki.shared.history.MyColor;
@@ -30,9 +29,6 @@ import edu.purdue.pivot.skwiki.shared.history.RemoveHistory;
 public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 		CheckoutAllService {
 
-	private String current_database_end = "";
-	private int updateRevision = -1;
-
 	private String escapeHtml(String html) {
 		if (html == null) {
 			return null;
@@ -43,30 +39,17 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 
 	@Override
 	public DataPack checkoutAll(DataPack input) throws IllegalArgumentException {
-		String serverInfo = getServletContext().getServerInfo();
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
-
-		System.out.println("Checkout All Server side code");
-		String returnInput = input.toString();
 		userAgent = escapeHtml(userAgent);
 
 		DataPack returnPack = new DataPack();
-
 		try {
-
 			Class.forName("org.postgresql.Driver");
-
 		} catch (ClassNotFoundException e) {
-
 			System.out.println("Where is your PostgreSQL JDBC Driver? "
 					+ "Include in your library path!");
 			e.printStackTrace();
-
 		}
-
-		System.out.println("SIZE is  " + input.revisionList.size());
-
-		ArrayList<RevisionHistory> revisionList = input.revisionList;
 
 		Connection connection = null;
 		Statement st = null;
@@ -82,142 +65,183 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 
 			for (int downloadRevision : downloadRevisions) {
 
-				// new
 				int targetRevision = downloadRevision;
 				int nonWholeSequence_id = 0;
 
 				int directFromRevision = 0;
-				
+
 				DataPack result_current = new DataPack();
-				
-				System.out.println("return layout size "
-						+ result_current.layoutHistoryList.size());
 
-				System.out.println("return canvas map size "
-						+ result_current.updateCanvasMap.size());
-
-				
-				System.out.println("non whole sub sequence is "
-						+ nonWholeSequence_id);
-				
 				if (nonWholeSequence_id != 0) {
 
 					String selectStr = "select from_revision from currentrevision where revision = "
 							+ targetRevision;
-					// revisionHistoryList.add(targetRevision);
-					System.out.println("targetRevision " + targetRevision);
+					// System.out.println("targetRevision "+targetRevision);
 					st = connection.createStatement();
 					rs = st.executeQuery(selectStr);
 
 					while (rs.next()) {
 						directFromRevision = rs.getInt(1);
-
-						// canvasNameList.add(id);
 					}
 
-					System.out.println("From revision~" + directFromRevision);
-					System.out.println("check out as whole and sub~");
-					/*
-					 * targetRevision = fromRevision; if(fromRevision==0) break;
-					 */
 				} else {
-					directFromRevision = targetRevision;
-					System.out.println("targetRevision " + targetRevision);
-					
-					System.out.println("Only check out as whole");
+					directFromRevision = input.updateRevision;
+					// System.out.println("Only check out as whole");
 				}
 
-				// System.out.println("revisionlist size "+revisionHistoryList.size());
-				// Collections.reverse(revisionHistoryList);
-				// ******* check out actions
-
-				// ************* 1. check out canvas
-				System.out.println("check out canvas start~~~~~~~~");
-
-				// ************** check out subrevisions
-
-				System.out.println("check out whole part");
-				System.out.println("The whole part " + directFromRevision);
-
-				// ************** check out as whole
-				// int revisionCheckedoutAswhole = input.updateRevision;
+				/* checkout canvas history */
 				int revisionCheckedoutAswhole = directFromRevision;
-				// for(int i = 0; i<= revisionHistoryList.size()-1; i++)
-				{
-					// System.out.println("iteration "+i);
-					// ******* check out canvas for one revision
-					/*
-					 * String selectStr =
-					 * "select * from lastrevision where revision = "
-					 * +(revisionHistoryList
-					 * .get(i))+" and entity_type="+"\'"+"C"+"\'";
-					 */
-					String selectStr = "select * from lastrevision where workingrevision = "
-							+ (revisionCheckedoutAswhole)
+				String selectStr = "select * from lastrevision where workingrevision = "
+						+ (revisionCheckedoutAswhole)
+						+ " and entity_type="
+						+ "\'" + "C" + "\'";
+
+				st = connection.createStatement();
+				rs = st.executeQuery(selectStr);
+
+				int last_revision = 0;
+				String entity_name;
+				while (rs.next()) {
+					entity_name = rs.getString(2);
+					last_revision = rs.getInt(5);
+					int checkoutrevision = rs.getInt(4);
+					if (result_current.updateCanvasMap.containsKey(entity_name)) {
+						CanvasPack tempPack = result_current.updateCanvasMap
+								.get(entity_name);
+						
+						CanvasPack checkedoutHistory = checkoutCanvasRevisions(
+								last_revision, checkoutrevision, entity_name);
+						for (AbstractHistory tempHistory : checkedoutHistory.updatedHistory) {
+							tempPack.updatedHistory.add(tempHistory);
+						}
+					} else {
+
+						result_current.updateCanvasMap.put(
+								entity_name,
+								checkoutCanvasRevisions(last_revision,
+										checkoutrevision, entity_name));
+					}
+				}
+
+				/* check out text */
+				selectStr = "select * from lastrevision where workingrevision = "
+						+ (revisionCheckedoutAswhole)
+						+ " and entity_type="
+						+ "\'" + "T" + "\'";
+				st = connection.createStatement();
+				rs = st.executeQuery(selectStr);
+
+				last_revision = 0;
+				while (rs.next()) {
+					entity_name = rs.getString(2);
+					last_revision = rs.getInt(5);
+					int checkoutrevision = rs.getInt(4);
+
+					// System.out.println("entity name " + entity_name
+					// + ",  last revision" + last_revision);
+
+					if (result_current.updateHtmlMap.containsKey(entity_name)) {
+						//System.out.println("entity name already exists in map");
+						TextPack tempPack = result_current.updateHtmlMap
+								.get(entity_name);
+						TextPack checkedoutTextPack = checkoutTextRevisions(
+								last_revision, checkoutrevision, entity_name);
+						// System.out.println("number of canvas history checkout "
+						// + checkedoutTextPack.patches.size());
+
+						for (Patch tempPatch : checkedoutTextPack.patches) {
+							tempPack.patches.add(tempPatch);
+						}
+					} else {
+						result_current.updateHtmlMap.put(
+								entity_name,
+								checkoutTextRevisions(last_revision,
+										checkoutrevision, entity_name));
+					}
+				}
+
+				/* check out layout history */
+				selectStr = "select * from lastrevision where workingrevision = "
+						+ (revisionCheckedoutAswhole)
+						+ " and entity_type="
+						+ "\'" + "L" + "\'";
+
+				st = connection.createStatement();
+				rs = st.executeQuery(selectStr);
+
+				last_revision = 0;
+				while (rs.next()) {
+
+					entity_name = rs.getString(2);
+					last_revision = rs.getInt(5);
+					int checkoutrevision = rs.getInt(4);
+
+					ArrayList<AbstractLayoutHistory> returnHistory = new ArrayList<AbstractLayoutHistory>();
+
+					returnHistory = checkoutLayout(checkoutrevision,
+							last_revision);
+
+					for (AbstractLayoutHistory tempLayoutHistory : returnHistory) {
+						result_current.layoutHistoryList.add(tempLayoutHistory);
+					}
+
+				}
+
+				/* nonWholeSequence_id is not zero, so there are sub revisions */
+				if (nonWholeSequence_id != 0) {
+					selectStr = "select * from subrevision_table where revision = "
+							+ (targetRevision)
 							+ " and entity_type="
-							+ "\'" + "C" + "\'";
+							+ "\'"
+							+ "C"
+							+ "\' and "
+							+ "sequence_id="
+							+ nonWholeSequence_id;
 
 					st = connection.createStatement();
 					rs = st.executeQuery(selectStr);
 
-					int last_revision = 0;
-					String entity_name;
+					last_revision = 0;
 					while (rs.next()) {
 						entity_name = rs.getString(2);
-						last_revision = rs.getInt(5);
-						int checkoutrevision = rs.getInt(4);
-						System.out.println("entity name " + entity_name
-								+ ",  last revision" + last_revision);
+						last_revision = rs.getInt(4);
+						int checkoutrevision = rs.getInt(3);
+
 						if (result_current.updateCanvasMap
 								.containsKey(entity_name)) {
-							System.out
-									.println("entity name already exists in map");
+
 							CanvasPack tempPack = result_current.updateCanvasMap
 									.get(entity_name);
-							// tempPack.updatedHistory
 							CanvasPack checkedoutHistory = checkoutCanvasRevisions(
 									last_revision, checkoutrevision,
 									entity_name);
-							System.out
-									.println("number of canvas history checkout "
-											+ checkedoutHistory.updatedHistory
-													.size());
+
 							for (AbstractHistory tempHistory : checkedoutHistory.updatedHistory) {
 								tempPack.updatedHistory.add(tempHistory);
 							}
 						} else {
-							System.out
-									.println("entity name  does not exist in map");
 
 							result_current.updateCanvasMap.put(
 									entity_name,
 									checkoutCanvasRevisions(last_revision,
 											checkoutrevision, entity_name));
 						}
-						// revisionHistoryList.add(fromRevision);
-						// canvasNameList.add(id);
 					}
-				}
 
-				// *******************************************************************
-
-				// ************* check out layout history
-
-				System.out.println("check out layout history start~~~");
-				// for(int i = 0; i<= revisionHistoryList.size()-1; i++)
-				{
-					
-
-					String selectStr = "select * from lastrevision where workingrevision = "
-							+ (revisionCheckedoutAswhole)
+					/* checkout layout in case of subrevision */
+					selectStr = "select * from subrevision_table where revision = "
+							+ (targetRevision)
 							+ " and entity_type="
-							+ "\'" + "L" + "\'";
+							+ "\'"
+							+ "L"
+							+ "\' and "
+							+ "sequence_id<="
+							+ nonWholeSequence_id;
 
 					st = connection.createStatement();
 					rs = st.executeQuery(selectStr);
 
-					int last_revision = 0;
-					String entity_name;
+					last_revision = 0;
 					while (rs.next()) {
 						/*
 						 * entity_name = rs.getString(2); last_revision =
@@ -225,10 +249,9 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 						 */
 
 						entity_name = rs.getString(2);
-						last_revision = rs.getInt(5);
-						int checkoutrevision = rs.getInt(4);
+						last_revision = rs.getInt(4);
+						int checkoutrevision = rs.getInt(3);
 
-						System.out.println("last revision is " + last_revision);
 						ArrayList<AbstractLayoutHistory> returnHistory = new ArrayList<AbstractLayoutHistory>();
 
 						returnHistory = checkoutLayout(checkoutrevision,
@@ -240,140 +263,56 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 						}
 
 					}
-				}
 
-				// *********************************************************************
+					/* check text in case of subrevision */
+					selectStr = "select * from subrevision_table where revision = "
+							+ (targetRevision)
+							+ " and entity_type="
+							+ "\'"
+							+ "T"
+							+ "\' and "
+							+ "sequence_id="
+							+ nonWholeSequence_id;
+					st = connection.createStatement();
+					rs = st.executeQuery(selectStr);
 
-				// ************** check out text
+					last_revision = 0;
+					while (rs.next()) {
+						entity_name = rs.getString(2);
+						last_revision = rs.getInt(4);
+						int checkoutrevision = rs.getInt(3);
 
-				// ********************************************
+						// System.out.println("entity name "+entity_name+",  last revision"+last_revision);
 
-				// *************** 2. checkout non whole revisons, e.g. some
-				// subrevisons
+						if (result_current.updateHtmlMap
+								.containsKey(entity_name)) {
+							// System.out.println("entity name already exists in map");
+							TextPack tempPack = result_current.updateHtmlMap
+									.get(entity_name);
 
-				if (nonWholeSequence_id != 0) {
-					// **** Canvas
-					{
-						String selectStr = "select * from subrevision_table where revision = "
-								+ (targetRevision)
-								+ " and entity_type="
-								+ "\'"
-								+ "C"
-								+ "\' and "
-								+ "sequence_id="
-								+ nonWholeSequence_id;
+							TextPack checkedoutTextPack = checkoutTextRevisions(
+									last_revision, checkoutrevision,
+									entity_name);
 
-						System.out
-								.println("check out NON- whole layout history start~~~");
-						System.out
-								.println("check out partial subrevision of revision "
-										+ targetRevision);
+							// System.out.println("number of text history checkout "+
+							// checkedoutTextPack.patches.size());
 
-						st = connection.createStatement();
-						rs = st.executeQuery(selectStr);
-
-						int last_revision = 0;
-						String entity_name;
-						while (rs.next()) {
-							entity_name = rs.getString(2);
-							last_revision = rs.getInt(4);
-							int checkoutrevision = rs.getInt(3);
-							System.out.println("entity name " + entity_name
-									+ ",  last revision" + last_revision);
-							if (result_current.updateCanvasMap
-									.containsKey(entity_name)) {
-								System.out
-										.println("entity name already exists in map");
-								CanvasPack tempPack = result_current.updateCanvasMap
-										.get(entity_name);
-								// tempPack.updatedHistory
-								CanvasPack checkedoutHistory = checkoutCanvasRevisions(
-										last_revision, checkoutrevision,
-										entity_name);
-								System.out
-										.println("number of canvas history checkout "
-												+ checkedoutHistory.updatedHistory
-														.size());
-								for (AbstractHistory tempHistory : checkedoutHistory.updatedHistory) {
-									tempPack.updatedHistory.add(tempHistory);
-								}
-							} else {
-								System.out
-										.println("entity name  does not exist in map");
-
-								result_current.updateCanvasMap.put(
-										entity_name,
-										checkoutCanvasRevisions(last_revision,
-												checkoutrevision, entity_name));
+							for (Patch tempPatch : checkedoutTextPack.patches) {
+								tempPack.patches.add(tempPatch);
 							}
-							// revisionHistoryList.add(fromRevision);
-							// canvasNameList.add(id);
+						} else {
+							result_current.updateHtmlMap.put(
+									entity_name,
+									checkoutTextRevisions(last_revision,
+											checkoutrevision, entity_name));
 						}
+
 					}
-
-					// ****** layout
-					System.out
-							.println("check out NON- whole layout history start~~~");
-					// for(int i = 0; i<= revisionHistoryList.size()-1; i++)
-					{
-					
-
-						String selectStr = "select * from subrevision_table where revision = "
-								+ (targetRevision)
-								+ " and entity_type="
-								+ "\'"
-								+ "L"
-								+ "\' and "
-								+ "sequence_id<="
-								+ nonWholeSequence_id;
-
-						st = connection.createStatement();
-						rs = st.executeQuery(selectStr);
-
-						int last_revision = 0;
-						String entity_name;
-						while (rs.next()) {
-							/*
-							 * entity_name = rs.getString(2); last_revision =
-							 * rs.getInt(4);
-							 */
-
-							entity_name = rs.getString(2);
-							last_revision = rs.getInt(4);
-							int checkoutrevision = rs.getInt(3);
-
-							System.out.println("last revision is "
-									+ last_revision);
-							ArrayList<AbstractLayoutHistory> returnHistory = new ArrayList<AbstractLayoutHistory>();
-
-							returnHistory = checkoutLayout(checkoutrevision,
-									last_revision);
-
-							for (AbstractLayoutHistory tempLayoutHistory : returnHistory) {
-								result_current.layoutHistoryList
-										.add(tempLayoutHistory);
-							}
-
-						}
-					}
-
-				}
-
-				System.out.println("return layout size "
-						+ result_current.layoutHistoryList.size());
-
-				System.out.println("return canvas map size "
-						+ result_current.updateCanvasMap.size());
-
-				for (AbstractLayoutHistory tempLayoutHistory : result_current.layoutHistoryList) {
-					System.out.println(tempLayoutHistory.toString());
 
 				}
 
 				result_current.fromRevision = downloadRevision;
-				
 				returnPack.allData.add(result_current);
-
 			}
 
 		} catch (SQLException e) {
@@ -401,18 +340,11 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 
 		return returnPack;
 	}
-
 	public CanvasPack checkoutCanvasRevisions(int lastsubRevision,
 			int revision, String id) throws IllegalArgumentException {
 
-		String serverInfo = getServletContext().getServerInfo();
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
-
-		// String returnInput = input.toString();
 		userAgent = escapeHtml(userAgent);
-		// String id = input.id;
-
-		String returnStr = "";
 		CanvasPack result = new CanvasPack();
 
 		try {
@@ -427,7 +359,6 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 
 		}
 
-		// System.out.println("id:  "+input.id+"");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
@@ -437,41 +368,27 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 			connection = DriverManager.getConnection(
 					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
 					"postgres", "fujiko");
-			/*
-			 * st = connection.createStatement(); String selectTextStr =
-			 * "select * from text where revision = " +input.updateRevision+
-			 * " and id ="+"\'"+id+"\'"; ResultSet textRs =
-			 * st.executeQuery(selectTextStr);
-			 * 
-			 * String text; while(textRs.next()) { text = textRs.getString(3);
-			 * result.updateHtml = text; }
-			 */
 
-			String selectStr = "select * from revisionhistory"
-					+
-					// "_"+current_database_end
-					// +
-					"_" + revision + " where subrevision <= " + lastsubRevision
-					+ " and id =" + "\'" + id + "\'";
+			String selectStr = "select * from revisionhistory" + "_" + revision
+					+ " where subrevision <= " + lastsubRevision + " and id ="
+					+ "\'" + id + "\'";
 
-			System.out.println("checkouting out a canvas \n lastsubrevision "
-					+ lastsubRevision);
-			System.out.println("revision " + revision + ", entity_name " + id);
-			System.out.println("selectStr " + selectStr);
+			// System.out.println("checkouting out a canvas \n lastsubrevision "
+			// + lastsubRevision);
+			// System.out.println("revision " + revision + ", entity_name " +
+			// id);
+			// System.out.println("selectStr " + selectStr);
+
 			st = connection.createStatement();
-
 			rs = st.executeQuery(selectStr);
 
 			while (rs.next()) {
-				// int revision = rs.getInt(2);
 				int lowb = rs.getInt(3);
 				int highb = rs.getInt(4);
-				System.out.println("lowb, highb: " + lowb + " " + highb);
-
-				String tempSelect = " select * from history_"
-						+ revision + " " + "where id =" + "\'" + id
-						+ "\' and historynumber<=" + highb
-						+ " and historynumber >=" + lowb;
+				
+				String tempSelect = " select * from history_" + revision + " "
+						+ "where id =" + "\'" + id + "\' and historynumber<="
+						+ highb + " and historynumber >=" + lowb;
 
 				Statement itlSt = null;
 				itlSt = connection.createStatement();
@@ -500,7 +417,6 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 								r, g, b);
 						((PathHeadHistory) tempHistory).strokeSize = strokeSize;
 						tempHistory.historyNumber = historyNumber;
-						// tempHistory.
 					} else if (type == 1) {
 						tempHistory = new AddHistory();
 						tempHistory.position = new Point(x, y);
@@ -527,7 +443,6 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 				}
 			}
 
-
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
@@ -550,8 +465,6 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 
-		System.out.println("size of checked canvas "
-				+ result.updatedHistory.size());
 		return result;
 	}
 
@@ -574,7 +487,6 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-		ResultSet rst = null;
 
 		try {
 
@@ -582,14 +494,12 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
 					"postgres", "fujiko");
 			st = connection.createStatement();
-			String selectTextStr = "select * from layout_" +
-			// current_database_end
-			// +"_"
-					+revision + " where subrevision <= " + last_subrevision;
+			String selectTextStr = "select * from layout_" + revision
+					+ " where subrevision <= " + last_subrevision;
 			ResultSet textRs = st.executeQuery(selectTextStr);
 
-			String text;
 			AbstractLayoutHistory tempEntityHistory = null;
+
 			while (textRs.next()) {
 				String object = textRs.getString(1);
 				String entity_type = textRs.getString(6);
@@ -605,9 +515,12 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 					if (entity_type.equals("CANVAS")) {
 						tempEntityHistory = new CreateEntityHistory(object,
 								EditorType.CANVAS);
-					} else {
+					} else if (entity_type.equals("TEXT")) {
 						tempEntityHistory = new CreateEntityHistory(object,
 								EditorType.TEXT);
+					} else if (entity_type.equals("IMAGE")) {
+						tempEntityHistory = new CreateEntityHistory(object,
+								EditorType.IMAGE);
 					}
 				} else if (type.equals("a")) {
 					tempEntityHistory = new AddToParentHistory(object,
@@ -651,26 +564,21 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 
 	}
 
-	public String checkoutText(DataPack input, DataPack result) {
-		String returnHtml = "";
-
+	public TextPack checkoutTextRevisions(int lastsubRevision, int revision,
+			String id) {
 		try {
-
 			Class.forName("org.postgresql.Driver");
-
 		} catch (ClassNotFoundException e) {
-
 			System.out.println("Where is your PostgreSQL JDBC Driver? "
 					+ "Include in your library path!");
 			e.printStackTrace();
-
 		}
 
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-		ResultSet rst = null;
 
+		TextPack result = new TextPack();
 		try {
 
 			connection = DriverManager.getConnection(
@@ -678,17 +586,36 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
-			// TODO WRONG!!!!!!!
-			String selectTextStr = "select * from text_" + input.id
-					+ " where revision = " + input.updateRevision;
-			ResultSet textRs = st.executeQuery(selectTextStr);
+			String selectStr = "select * from patch" + "_" + revision
+					+ " where subrevision <= " + lastsubRevision + " and id ="
+					+ "\'" + id + "\'";
 
-			String text;
-			while (textRs.next()) {
-				String key = textRs.getString(1);
-				text = textRs.getString(3);
-				returnHtml = text;
-				result.updateHtmlMap.put(key, text);
+			st = connection.createStatement();
+			rs = st.executeQuery(selectStr);
+
+			while (rs.next()) {
+				int lowb = rs.getInt(3);
+				int highb = rs.getInt(4);
+
+				String tempSelect = " select * from diff_" + revision + " "
+						+ "where id =" + "\'" + id
+						+ "\' and diff_sequence_id<=" + highb
+						+ " and diff_sequence_id >=" + lowb;
+
+				Statement itlSt = null;
+				itlSt = connection.createStatement();
+				ResultSet itlRs = null;
+				itlRs = itlSt.executeQuery(tempSelect);
+				Patch tempPatch = new Patch();
+				while (itlRs.next()) {
+					int operation = itlRs.getInt(3);
+					String text = itlRs.getString(4);
+					tempPatch.addDiff(operation, text);
+				}
+				result.patches.add(tempPatch);
+				if (itlSt != null) {
+					itlSt.close();
+				}
 			}
 
 		} catch (SQLException e) {
@@ -712,8 +639,7 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 				ex.printStackTrace();
 			}
 		}
-
-		return returnHtml;
+		return result;
 	}
 
 	public void checkoutTag(DataPack result, DataPack input) {
@@ -726,22 +652,19 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 			System.out.println("Where is your PostgreSQL JDBC Driver? "
 					+ "Include in your library path!");
 			e.printStackTrace();
-
 		}
 
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;
-		ResultSet rst = null;
 
 		try {
-
 			connection = DriverManager.getConnection(
 					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
-			// ********* text tags
+			/* text tags */
 			String selectTextStr = "select * from tag" + " where revision = "
 					+ input.updateRevision + " and " + "entity_type=" + "\'"
 					+ "Text" + "\'";
@@ -751,22 +674,19 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 			while (textRs.next()) {
 				String key = textRs.getString(4);
 				tag = textRs.getString(5);
-				// returnHtml = text;
 				result.textTaglMap.put(key, tag);
 			}
 
-			// ********* text tags
+			/* canvas tags */
 			String selectCanvasStr = "select * from tag" + " where revision = "
 					+ input.updateRevision + " and " + "entity_type=" + "\'"
 					+ "Canvas" + "\'";
 			st = connection.createStatement();
 			ResultSet canvasRs = st.executeQuery(selectCanvasStr);
 
-			// tag;
 			while (canvasRs.next()) {
 				String key = canvasRs.getString(4);
 				tag = canvasRs.getString(5);
-				// returnHtml = text;
 				result.canvasTagMap.put(key, tag);
 			}
 
@@ -792,5 +712,4 @@ public class CheckoutAllServiceImpl extends RemoteServiceServlet implements
 			}
 		}
 	}
-
 }

@@ -18,9 +18,7 @@ public class RichTextEditor extends RichTextArea implements AttachedPanel {
 		this.uuid = uuid;
 		this.uid = uid;
 		richTextArea = this;
-
 		richTextToolbar = new RichTextToolbar(richTextArea);
-		
 		this.setSize("500px", "100px");
 	}
 
@@ -29,7 +27,6 @@ public class RichTextEditor extends RichTextArea implements AttachedPanel {
 		this.uuid = uuid;
 		this.uid = uid;
 		richTextArea = this;
-
 		richTextToolbar = new RichTextToolbar(richTextArea);
 		this.setSize(500*scaleWidth+"px", 100*scaleHeight+"px");
 		DOM.setStyleAttribute(richTextArea.getElement(), "font-size", (int)(scaleWidth * 100) + "%");

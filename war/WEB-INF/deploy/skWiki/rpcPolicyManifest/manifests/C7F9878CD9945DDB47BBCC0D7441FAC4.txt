@@ -1,0 +1,2 @@
+serviceClass: edu.purdue.pivot.skwiki.client.CheckoutService
+path: DEC0EFEFF49C9BA55417C90624CB9174.gwt.rpc

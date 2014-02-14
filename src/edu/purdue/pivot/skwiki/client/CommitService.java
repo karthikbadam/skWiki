@@ -10,5 +10,5 @@ import edu.purdue.pivot.skwiki.shared.DataPack;
  */
 @RemoteServiceRelativePath("commit")
 public interface CommitService extends RemoteService {
-	DataPack greetServer(DataPack name) throws IllegalArgumentException;
+	DataPack commit(DataPack name) throws IllegalArgumentException;
 }

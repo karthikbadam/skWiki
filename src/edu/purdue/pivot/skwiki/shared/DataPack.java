@@ -48,8 +48,7 @@ public class DataPack implements Serializable {
 	public String updateHtml = "";
 
 	// ********new history update set for
-	public HashMap<String, String> updateHtmlMap;
-	// public HashMap<String, ArrayList<AbstractHistory>> updateCanvasMap;
+	public HashMap<String, TextPack> updateHtmlMap;
 	public HashMap<String, CanvasPack> updateCanvasMap;
 	public HashMap<String, ImagePack> updateImageMap;
 	public HashMap<String, String> canvasTagMap;
@@ -75,26 +74,22 @@ public class DataPack implements Serializable {
 
 	public DataPack() {
 		dataArray = new int[SIZE];
-		// updateCanvasMap = new HashMap<String, ArrayList<AbstractHistory>>();
-		updateImageMap = new HashMap<String, ImagePack>();
 		layoutHistoryList = new ArrayList<AbstractLayoutHistory>();
 		revisionList = new ArrayList<RevisionHistory>();
 		allData = new ArrayList<DataPack>();
-		//for tags
+		
+		/* tags */
 		canvasTagMap = new HashMap<String,String>();
 		textTaglMap = new HashMap<String,String>();
 		searchTagList = new ArrayList<SearchTagResult>();
 		allRevList = new ArrayList<SearchTagResult>();
 		downloadRevisions = new ArrayList<Integer>();
 		
-		updateHtmlMap = new HashMap<String, String>();
-		//updateCanvasMap = new HashMap<String, ArrayList<AbstractHistory>>();
+		/* content: canvas and text */
+		updateHtmlMap = new HashMap<String, TextPack>();
+		updateImageMap = new HashMap<String, ImagePack>();
 		updateCanvasMap = new HashMap<String,CanvasPack>();
 		
-		canvasTagMap = new HashMap<String,String>();
-		textTaglMap = new HashMap<String,String>();
-		
-	
 	}
 
 	public void addData(int i) {

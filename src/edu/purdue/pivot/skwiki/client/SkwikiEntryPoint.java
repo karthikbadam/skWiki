@@ -1188,7 +1188,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 				// ServiceDefTarget endpoint = (ServiceDefTarget) commitService;
 				// PhonegapUtil.prepareService(endpoint,
 				// "http://127.0.0.1:8080/Skwiki/skWiki/", "greet");
-				commitService.greetServer(packtoSend,
+				commitService.commit(packtoSend,
 						new AsyncCallback<DataPack>() {
 							@Override
 							public void onFailure(Throwable caught) {

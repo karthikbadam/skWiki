@@ -8,6 +8,6 @@ import edu.purdue.pivot.skwiki.shared.DataPack;
  * The async counterpart of <code>GreetingService</code>.
  */
 public interface CommitServiceAsync {
-	void greetServer(DataPack input, AsyncCallback<DataPack> callback)
+	void commit(DataPack input, AsyncCallback<DataPack> callback)
 			throws IllegalArgumentException;
 }
