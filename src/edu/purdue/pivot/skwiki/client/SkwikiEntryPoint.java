@@ -347,7 +347,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 	public Boolean loginExistingUser(String username, String password) {
 
 		DataPack packtoSend = new DataPack();
-		packtoSend.projectName = "ME444";
+		packtoSend.projectName = "postchi_testing";
 
 		UserPack tempProjectPack = new UserPack(username, password);
 		packtoSend.userInfo = tempProjectPack;

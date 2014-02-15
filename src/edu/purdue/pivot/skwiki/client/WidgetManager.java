@@ -301,6 +301,7 @@ public class WidgetManager {
 		imagePopup.show();
 		imagePopup.setPopupPosition(400, 300);
 		imagePopup.getElement().getStyle().setZIndex(4);
+		imagePopup.setAutoHideEnabled(true);
 		// Enable/disable the component
 		defaultUploader.setEnabled(true);
 		// Add a finish handler which will load the image once the upload

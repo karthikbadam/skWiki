@@ -169,9 +169,9 @@ class MouseDragHandler
     }
 
     // prevent browser image dragging in Firefox et al.
-    if (mouseDownWidget instanceof Image) {
+    //if (mouseDownWidget instanceof Image) {
       event.preventDefault();
-    }
+    //}
 
     mouseDownOffsetX = x;
     mouseDownOffsetY = y;
