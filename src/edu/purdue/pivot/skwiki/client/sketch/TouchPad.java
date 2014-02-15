@@ -58,7 +58,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 	HorizontalPanel sliderPanel = new HorizontalPanel();
 	// Logger logger = Logger.getLogger("Skwiki");
 
-	final com.smartgwt.client.widgets.Window colorWin = new com.smartgwt.client.widgets.Window();
+	com.smartgwt.client.widgets.Window colorWin = new com.smartgwt.client.widgets.Window();
+	com.smartgwt.client.widgets.Window sliderWin = new com.smartgwt.client.widgets.Window();
 
 	int left;
 	int top;
@@ -261,9 +262,9 @@ public class TouchPad extends Surface implements AttachedPanel {
 								.getColorCode());
 						canvas_context.setFillStyle(currentColor.getColorCode());
 						canvas_context
-								.setLineWidth(((double) strokeSize) * 0.2);
+								.setLineWidth(((double) strokeSize) * 0.7);
 						canvas_context.beginPath();
-						canvas_context.arc(x, y, ((double) strokeSize) * 0.2,
+						canvas_context.arc(x, y, ((double) strokeSize) * 0.7,
 								0, 2 * Math.PI);
 						canvas_context.fill();
 						indexes.add(cache.size());
@@ -313,11 +314,11 @@ public class TouchPad extends Surface implements AttachedPanel {
 								.getColorCode());
 						canvas_context.setFillStyle(currentColor.getColorCode());
 						canvas_context
-								.setLineWidth(((double) strokeSize) * 0.15);
+								.setLineWidth(((double) strokeSize) * 0.7);
 						canvas_context.setLineCap(LineCap.ROUND);
 						canvas_context.setLineJoin(LineJoin.ROUND);
 						canvas_context
-								.setShadowBlur(((double) strokeSize) * 0.6);
+								.setShadowBlur(((double) strokeSize) * 0.3);
 						canvas_context.setShadowColor(currentColor
 								.getColorCode());
 
@@ -551,10 +552,10 @@ public class TouchPad extends Surface implements AttachedPanel {
 				if (strokePointCount == 2) {
 					canvas_context.setStrokeStyle(pathColor.getColorCode());
 					canvas_context.setFillStyle(pathColor.getColorCode());
-					canvas_context.setLineWidth(((double) strokeSize) * 0.15);
+					canvas_context.setLineWidth(((double) strokeSize) * 0.7);
 					canvas_context.setLineCap(LineCap.ROUND);
 					canvas_context.setLineJoin(LineJoin.ROUND);
-					canvas_context.setShadowBlur(((double) strokeSize) * 0.6);
+					canvas_context.setShadowBlur(((double) strokeSize) * 0.3);
 					canvas_context.setShadowColor(pathColor.getColorCode());
 					
 					/* get the x, y */
@@ -659,8 +660,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 			} else if (history.getType() == "PathHeadHistory") {
 				
-				/* add index to indexes list */
-				indexes.add(start);
+				MyColor pathColor = ((PathHeadHistory) history).pathColor;
+				strokeSize = ((PathHeadHistory) history).strokeSize;
 				
 				Point position = ((PathHeadHistory) history).position;
 				double x = position.getVector2().getX();
@@ -674,16 +675,19 @@ public class TouchPad extends Surface implements AttachedPanel {
 				p2.y = y;
 				strokePointCount++;
 				strokePointCount++;
+				
+				/* add index to indexes list */
+				indexes.add(cache.size());
 				cache.add(new Vector2(x, y));
 				strokeSizes.add(strokeSize);
-				colorCache.add(currentColor.getColorCode());
+				colorCache.add(pathColor.getColorCode());
 				
 				/* set stroke color, size, and shadow */
-				canvas_context.setStrokeStyle(currentColor.getColorCode());
-				canvas_context.setFillStyle(currentColor.getColorCode());
-				canvas_context.setLineWidth(((double) strokeSize) * 0.2);
+				canvas_context.setStrokeStyle(pathColor.getColorCode());
+				canvas_context.setFillStyle(pathColor.getColorCode());
+				canvas_context.setLineWidth(((double) strokeSize) * 0.6);
 				canvas_context.beginPath();
-				canvas_context.arc(x, y, ((double) strokeSize) * 0.2, 0,
+				canvas_context.arc(x, y, ((double) strokeSize) * 0.6, 0,
 						2 * Math.PI);
 				canvas_context.fill();
 
@@ -699,41 +703,44 @@ public class TouchPad extends Surface implements AttachedPanel {
 		for (int i = 0; i < indexes.size(); i++) {
 			int index = indexes.get(i);
 			Vector2 touchStart = cache.get(index);
-			String color = colorCache.get(index);
-			int strokeSize = strokeSizes.get(index);
+			String color = colorCache.get(i);
+			int strokeSize = strokeSizes.get(i);
 			double x = touchStart.getX();
 			double y = touchStart.getY();
 			
 			if (index > 0) {
 				canvas_context.stroke();
+				surface.restore();
 			}
+			
 			canvas_context.setStrokeStyle(color);
 			canvas_context.setFillStyle(color);
-			canvas_context.setLineWidth(((double) strokeSize) * 0.2);
+			canvas_context.setLineWidth(((double) strokeSize) * 0.7);
 			canvas_context.beginPath();
-			canvas_context.arc(x, y, ((double) strokeSize) * 0.2, 0,
+			canvas_context.arc(x, y, ((double) strokeSize) * 0.7, 0,
 					2 * Math.PI);
 			canvas_context.fill();
 			
 			
+			canvas_context.beginPath();
 			canvas_context.setStrokeStyle(color);
 			canvas_context.setFillStyle(color);
-			canvas_context.setLineWidth(((double) strokeSize) * 0.15);
+			canvas_context.setLineWidth(((double) strokeSize) * 0.7);
 			canvas_context.setLineCap(LineCap.ROUND);
 			canvas_context.setLineJoin(LineJoin.ROUND);
-			canvas_context.setShadowBlur(((double) strokeSize) * 0.6);
+			canvas_context.setShadowBlur(((double) strokeSize) * 0.3);
 			canvas_context.setShadowColor(color);
-			
-			canvas_context.beginPath();
 			canvas_context.moveTo(x, y);
 			
 			Vector2 touchMove;
+			
 			for (int j = index+1; j < cache.size() - 1; j++) {
 				if (i == indexes.size()-1) {
 					
 				} else if ( j < indexes.get(i + 1) - 1) {
 					
 				} else {
+					canvas_context.stroke();
 					break;
 				}
 				
@@ -746,6 +753,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 				double d = (y + nexty) / 2;
 				canvas_context.quadraticCurveTo(x, y, c, d);
 			}
+			canvas_context.stroke();
+			
 		}
 	}
 
@@ -786,7 +795,6 @@ public class TouchPad extends Surface implements AttachedPanel {
 		colorWin.getHeader().setHeight(28);
 	}
 
-	final com.smartgwt.client.widgets.Window sliderWin = new com.smartgwt.client.widgets.Window();
 
 	public void changeStrokeSize() {
 		if (currentColor == KnownColor.WHITE) {
