@@ -44,6 +44,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 	/* history stack */
 	private HistoryManager myHistoryManager;
 	private HistoryManager myHistoryManagerRedoStack;
+	
+	Boolean inFocus = false; 
 
 	static int WIDTH = 1100;
 	static int HEIGHT = 630;
@@ -53,13 +55,13 @@ public class TouchPad extends Surface implements AttachedPanel {
 	private Color currentColor = KnownColor.BLACK;
 	private int eraserSize = 5;
 
-	/* slider for strokeSize */
-	Slider hSlider = new Slider("Stroke Size");
-	HorizontalPanel sliderPanel = new HorizontalPanel();
-	// Logger logger = Logger.getLogger("Skwiki");
+//	/* slider for strokeSize */
+//	Slider hSlider = new Slider("Stroke Size");
+//	HorizontalPanel sliderPanel = new HorizontalPanel();
+//	Logger logger = Logger.getLogger("Skwiki");
 
-	com.smartgwt.client.widgets.Window colorWin = new com.smartgwt.client.widgets.Window();
-	com.smartgwt.client.widgets.Window sliderWin = new com.smartgwt.client.widgets.Window();
+//	com.smartgwt.client.widgets.Window colorWin = new com.smartgwt.client.widgets.Window();
+//	com.smartgwt.client.widgets.Window sliderWin = new com.smartgwt.client.widgets.Window();
 
 	int left;
 	int top;
@@ -83,7 +85,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 	ArrayList<String> colorCache = new ArrayList<String>();
 	ArrayList<Vector2> cache = new ArrayList<Vector2>();
 
-	private ArrayList<CanvasToolbar> toolbars;
+	//private ArrayList<CanvasToolbar> toolbars;
 	Boolean leftMouseDown = false;
 
 	/* buffer 4 points before drawing a curve */
@@ -140,87 +142,20 @@ public class TouchPad extends Surface implements AttachedPanel {
 		right = left + WIDTH;
 		bottom = top + HEIGHT;
 
-		this.toolbars = toolbars2;
-		toolbar = new CanvasToolbar(this);
+//		this.toolbars = toolbars2;
+//		toolbar = new CanvasToolbar(this);
+		
+		toolbar = CanvasToolbar.getInstance();
+		toolbar.addTouchPad(this);
+		
 		canvas_context = this.getContext();
-
-		/* slider for the stroke size */
-		hSlider.setVertical(false);
-		hSlider.setMinValue(1);
-		hSlider.setMaxValue(50);
-		hSlider.setWidth(500);
-		hSlider.setNumValues(50);
-		hSlider.setValue(strokeSize);
-		hSlider.addValueChangedHandler(new ValueChangedHandler() {
-			@Override
-			public void onValueChanged(ValueChangedEvent event) {
-				strokeSize = event.getValue();
-			}
-		});
-
-		sliderPanel.add(hSlider);
-		sliderWin.setTitle("Stroke Size");
-		sliderWin.setShowMinimizeButton(true);
-		sliderWin
-				.addCloseClickHandler(new com.smartgwt.client.widgets.events.CloseClickHandler() {
-
-					@Override
-					public void onCloseClick(CloseClickEvent event) {
-						sliderWin.hide();
-					}
-				});
-
-		sliderWin.setCanDragReposition(true);
-		sliderWin.setCanDragResize(true);
-		sliderWin.addItem(sliderPanel);
-		sliderWin.setAutoSize(true);
-		sliderWin.setCanDragReposition(true);
-		sliderWin.setCanDragResize(true);
-
-		/* settings window for color palette */
-		colorWin.setTitle("Color Palette");
-		final SimpleColorPicker picker = new SimpleColorPicker();
-		picker.addListner(new ColorHandler() {
-			@Override
-			public void newColorSelected(String color) {
-				color = color.replace("#", "");
-				edu.purdue.pivot.skwiki.client.sketch.colorpicker.Color tempColor = new edu.purdue.pivot.skwiki.client.sketch.colorpicker.Color();
-				try {
-					tempColor.setHex(color);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				currentColor = new Color(tempColor.getRed(), tempColor
-						.getGreen(), tempColor.getBlue());
-			}
-		});
-
-		picker.setHeight("250px");
-		picker.setWidth("160px");
-
-		colorWin.addItem(new SimplePanel(picker));
-		colorWin.addCloseClickHandler(new com.smartgwt.client.widgets.events.CloseClickHandler() {
-
-			@Override
-			public void onCloseClick(CloseClickEvent event) {
-				colorWin.hide();
-			}
-		});
-
-		colorWin.setCanDragReposition(true);
-		colorWin.setCanDragResize(true);
-		colorWin.setAutoSize(true);
-		colorWin.setCanDragReposition(true);
-		colorWin.setCanDragResize(true);
 
 		/* add focus handler that works now */
 		this.addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(FocusEvent event) {
-				for (CanvasToolbar temp_toolbar : toolbars) {
-					temp_toolbar.setVisible(false);
-				}
-				toolbar.setVisible(true);
+				toolbar.setFocus();
+				inFocus = true; 
 			}
 		});
 
@@ -314,7 +249,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 								.getColorCode());
 						canvas_context.setFillStyle(currentColor.getColorCode());
 						canvas_context
-								.setLineWidth(((double) strokeSize) * 0.7);
+								.setLineWidth(((double) strokeSize) * 0.5);
 						canvas_context.setLineCap(LineCap.ROUND);
 						canvas_context.setLineJoin(LineJoin.ROUND);
 						canvas_context
@@ -497,9 +432,9 @@ public class TouchPad extends Surface implements AttachedPanel {
 		}
 	}
 
-	public CanvasToolbar getToolbar() {
-		return toolbar;
-	}
+//	public CanvasToolbar getToolbar() {
+//		return toolbar;
+//	}
 
 	public void updateDataPack(DataPack data, int startIndex) {
 		int i = 0;
@@ -552,7 +487,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 				if (strokePointCount == 2) {
 					canvas_context.setStrokeStyle(pathColor.getColorCode());
 					canvas_context.setFillStyle(pathColor.getColorCode());
-					canvas_context.setLineWidth(((double) strokeSize) * 0.7);
+					canvas_context.setLineWidth(((double) strokeSize) * 0.5);
 					canvas_context.setLineCap(LineCap.ROUND);
 					canvas_context.setLineJoin(LineJoin.ROUND);
 					canvas_context.setShadowBlur(((double) strokeSize) * 0.3);
@@ -685,9 +620,9 @@ public class TouchPad extends Surface implements AttachedPanel {
 				/* set stroke color, size, and shadow */
 				canvas_context.setStrokeStyle(pathColor.getColorCode());
 				canvas_context.setFillStyle(pathColor.getColorCode());
-				canvas_context.setLineWidth(((double) strokeSize) * 0.6);
+				canvas_context.setLineWidth(((double) strokeSize) * 0.4);
 				canvas_context.beginPath();
-				canvas_context.arc(x, y, ((double) strokeSize) * 0.6, 0,
+				canvas_context.arc(x, y, ((double) strokeSize) * 0.4, 0,
 						2 * Math.PI);
 				canvas_context.fill();
 
@@ -699,6 +634,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 	}
 
 	private void redrawfromCache() {
+		surface.clear();
 		
 		for (int i = 0; i < indexes.size(); i++) {
 			int index = indexes.get(i);
@@ -715,9 +651,9 @@ public class TouchPad extends Surface implements AttachedPanel {
 			
 			canvas_context.setStrokeStyle(color);
 			canvas_context.setFillStyle(color);
-			canvas_context.setLineWidth(((double) strokeSize) * 0.7);
+			canvas_context.setLineWidth(((double) strokeSize) * 0.4);
 			canvas_context.beginPath();
-			canvas_context.arc(x, y, ((double) strokeSize) * 0.7, 0,
+			canvas_context.arc(x, y, ((double) strokeSize) * 0.4, 0,
 					2 * Math.PI);
 			canvas_context.fill();
 			
@@ -725,7 +661,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 			canvas_context.beginPath();
 			canvas_context.setStrokeStyle(color);
 			canvas_context.setFillStyle(color);
-			canvas_context.setLineWidth(((double) strokeSize) * 0.7);
+			canvas_context.setLineWidth(((double) strokeSize));
 			canvas_context.setLineCap(LineCap.ROUND);
 			canvas_context.setLineJoin(LineJoin.ROUND);
 			canvas_context.setShadowBlur(((double) strokeSize) * 0.3);
@@ -789,33 +725,46 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 
 	public void changeColor() {
-		colorWin.show();
-		colorWin.setLeft(windowWidth - colorWin.getWidth() - 10);
-		colorWin.setTop(60);
-		colorWin.getHeader().setHeight(28);
+//		colorWin.show();
+//		colorWin.setLeft(windowWidth - colorWin.getWidth() - 10);
+//		colorWin.setTop(60);
+//		colorWin.getHeader().setHeight(28);
 	}
 
+	public void changeColor(Color tempColor) {
+		currentColor = tempColor;
+	}
 
 	public void changeStrokeSize() {
-		if (currentColor == KnownColor.WHITE) {
-			currentColor = KnownColor.BLACK;
-			return;
-		}
-
-		if (erase) {
-			erase = false;
-			return;
-		}
-
-		sliderWin.show();
-		sliderWin.setLeft(windowWidth - sliderWin.getWidth() - 10);
-		sliderWin.setTop(windowHeight - sliderWin.getHeight() - 20);
-		sliderWin.getHeader().setHeight(28);
-
-		erase = false;
+//		if (currentColor == KnownColor.WHITE) {
+//			currentColor = KnownColor.BLACK;
+//			return;
+//		}
+//
+//		if (erase) {
+//			erase = false;
+//			return;
+//		}
+//
+//		sliderWin.show();
+//		sliderWin.setLeft(windowWidth - sliderWin.getWidth() - 10);
+//		sliderWin.setTop(windowHeight - sliderWin.getHeight() - 20);
+//		sliderWin.getHeader().setHeight(28);
+//
+//		erase = false;
 
 	}
 
+	public void changeStrokeSize(int tempStrokeSize) {
+		if (currentColor == KnownColor.WHITE) {
+			currentColor = KnownColor.BLACK;
+		}
+		
+		strokeSize = tempStrokeSize; 
+		erase = false;
+	}
+
+	
 	public void changeOpacity() {
 
 	}

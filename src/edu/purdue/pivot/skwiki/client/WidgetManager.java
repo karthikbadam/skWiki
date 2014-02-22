@@ -64,7 +64,6 @@ public class WidgetManager {
 	int layoutSettleIndex = 0;
 
 	// Settings panel like in photoshop but with less icons
-	// TODO make settings a flex table
 	public VerticalPanel settings_panel;
 
 	// user ID
@@ -90,7 +89,7 @@ public class WidgetManager {
 	ArrayList<WindowPanel> editors = new ArrayList<WindowPanel>();
 	final HashMap<String, WindowPanel> windowPanelmap = new HashMap<String, WindowPanel>();
 
-	ArrayList<CanvasToolbar> toolbars = new ArrayList<CanvasToolbar>();
+//	ArrayList<CanvasToolbar> toolbars = new ArrayList<CanvasToolbar>();
 
 	// layout history
 	final ArrayList<AbstractLayoutHistory> layoutHistoryList = new ArrayList<AbstractLayoutHistory>();
@@ -125,11 +124,13 @@ public class WidgetManager {
 		windowController = new WindowController(boundaryPanel,
 				layoutHistoryList);
 
-		settings_panel = new VerticalPanel();
 		this.entityList = entityList;
 		entityList.setAutoHeight();
 		entityList.setShowAllRecords(true);
 		entityList.setWidth(windowWidth/3);
+		
+		settings_panel = new VerticalPanel();
+		settings_panel.add(CanvasToolbar.getInstance());
 		
 		// settings_window = new com.smartgwt.client.widgets.Window();
 		// settings_window.setTitle("Settings");
@@ -238,19 +239,19 @@ public class WidgetManager {
 		root.addChild(tempText);
 		textEditorIndex++;
 
-		myEditor.getArea().addFocusHandler(new FocusHandler() {
-
-			@Override
-			public void onFocus(FocusEvent event) {
-				// settings_window.hide();
-				for (CanvasToolbar toolbar : toolbars) {
-					toolbar.setVisible(false);
-				}
-				myEditor.getArea().setStyleName("gwt-TouchPanelWidget2");
-
-			}
-
-		});
+//		myEditor.getArea().addFocusHandler(new FocusHandler() {
+//
+//			@Override
+//			public void onFocus(FocusEvent event) {
+//				// settings_window.hide();
+//				for (CanvasToolbar toolbar : toolbars) {
+//					toolbar.setVisible(false);
+//				}
+//				myEditor.getArea().setStyleName("gwt-TouchPanelWidget2");
+//
+//			}
+//
+//		});
 	}
 
 	/* clone a Text Box */
@@ -390,7 +391,7 @@ public class WidgetManager {
 	protected void addCanvas(String canvasEditorUUID, int created) {
 
 		final MyCanvasEditor myEditor = new MyCanvasEditor(canvasEditorUUID,
-				uid, toolbars, windowWidth, windowHeight);
+				uid, null, windowWidth, windowHeight);
 		final TouchPad myCanvas = myEditor.getSurface();
 
 		HorizontalPanel header = 	new HorizontalPanel();
@@ -424,13 +425,12 @@ public class WidgetManager {
 		
 		
 		// toolbar canvas
-		final CanvasToolbar toolbar = myEditor.getSurface().getToolbar();
-		// toolbar.setVisible(false);
-		for (CanvasToolbar temp_toolbar : toolbars) {
-			temp_toolbar.setVisible(false);
-		}
-		toolbars.add(toolbar);
-		settings_panel.add(toolbar);
+//		final CanvasToolbar toolbar = myEditor.getSurface().getToolbar();
+//		// toolbar.setVisible(false);
+//		for (CanvasToolbar temp_toolbar : toolbars) {
+//			temp_toolbar.setVisible(false);
+//		}
+//		toolbars.add(toolbar);
 		
 	}
 
@@ -452,7 +452,7 @@ public class WidgetManager {
 
 		canvasEditorUUID = newCanvasEditorUUID;
 		final MyCanvasEditor myEditor = new MyCanvasEditor(canvasEditorUUID,
-				uid, toolbars, windowWidth, windowHeight);
+				uid, null, windowWidth, windowHeight);
 		final TouchPad myCanvas = myEditor.getSurface();
 
 		HorizontalPanel header = new HorizontalPanel();
@@ -483,13 +483,13 @@ public class WidgetManager {
 		windowPanelmap.put(myEditor.getID(), windowPanel);
 
 		// toolbar canvas
-		final CanvasToolbar toolbar = myEditor.getSurface().getToolbar();
-		// toolbar.setVisible(false);
-		for (CanvasToolbar temp_toolbar : toolbars) {
-			temp_toolbar.setVisible(false);
-		}
-		toolbars.add(toolbar);
-		settings_panel.add(toolbar);
+//		final CanvasToolbar toolbar = myEditor.getSurface().getToolbar();
+//		// toolbar.setVisible(false);
+//		for (CanvasToolbar temp_toolbar : toolbars) {
+//			temp_toolbar.setVisible(false);
+//		}
+//		toolbars.add(toolbar);
+//		settings_panel.add(toolbar);
 
 		myEditor.updateEditor(result1, tag);
 	}
@@ -506,8 +506,9 @@ public class WidgetManager {
 		canvasEditorIndex = 0;
 		imageEditorIndex = 0;
 		boundaryPanel.clear();
-		toolbars.clear();
+		//toolbars.clear();
 		settings_panel.clear();
+		settings_panel.add(CanvasToolbar.getInstance());
 		return 1;
 	}
 

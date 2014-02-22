@@ -16,6 +16,14 @@
 	padding-top: 0px;
 }
 
+
+iframe:not([seamless]) {
+	border: 0px inset;
+	border-top-color: initial;
+	border-top-style: inset;
+	border-top-width: 0px;
+}
+
 .login {
 	width: 470px;
 	float: left;

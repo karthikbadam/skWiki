@@ -75,10 +75,7 @@ public class ImageUploaderServlet extends UploadAction {
 		Statement st = null;
 		ResultSet rs = null;
 		ResultSet rst = null;
-		//	ArrayList<Integer> revisionHistoryList = new ArrayList<Integer>();
-
-		System.out.println("Checking out service start~~~~~~~~~~~~~~~");
-
+		
 		try {
 
 			connection = DriverManager.getConnection(

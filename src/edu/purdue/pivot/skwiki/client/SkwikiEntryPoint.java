@@ -638,8 +638,8 @@ public class SkwikiEntryPoint implements EntryPoint {
 						// Window.alert("Canvas selected");
 						String canvasEditorUUID = UUID.uuid(8, 16);
 						widgets.addCanvas("Canvas" + canvasEditorUUID, 1);
-						rootPanel.setWidgetPosition(menuPanel, 10, windowHeight
-								/ 2 - menuPanel.getOffsetHeight() / 2);
+//						rootPanel.setWidgetPosition(menuPanel, 10, windowHeight
+//								/ 2 - menuPanel.getOffsetHeight() / 2);
 					}
 
 				});
