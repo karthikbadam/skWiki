@@ -772,14 +772,14 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 	public void undo() {
 		int size = myHistoryManager.historys.size();
-
-		int removeSize = 20;
-		if (size < removeSize) {
-			return;
-		}
-
-		for (int i = size - 1; i > size - removeSize; i--) {
-			AbstractHistory tempHistory = myHistoryManager.historys.remove(i);
+		for (int i = size - 1; i > 0; i--) {
+			AbstractHistory tempHistory = myHistoryManager.historys.get(i);
+			if (tempHistory.getType() == "PathHeadHistory") {
+				tempHistory = myHistoryManager.historys.remove(i);
+				myHistoryManagerRedoStack.historys.add(tempHistory);
+				break;
+			}
+			tempHistory = myHistoryManager.historys.remove(i);
 			myHistoryManagerRedoStack.historys.add(tempHistory);
 		}
 
