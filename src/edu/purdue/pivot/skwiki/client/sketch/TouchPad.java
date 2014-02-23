@@ -724,18 +724,18 @@ public class TouchPad extends Surface implements AttachedPanel {
 	}
 
 
-	public void changeColor() {
+//	public void changeColor() {
 //		colorWin.show();
 //		colorWin.setLeft(windowWidth - colorWin.getWidth() - 10);
 //		colorWin.setTop(60);
 //		colorWin.getHeader().setHeight(28);
-	}
+//	}
 
 	public void changeColor(Color tempColor) {
 		currentColor = tempColor;
 	}
 
-	public void changeStrokeSize() {
+//	public void changeStrokeSize() {
 //		if (currentColor == KnownColor.WHITE) {
 //			currentColor = KnownColor.BLACK;
 //			return;
@@ -752,8 +752,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 //		sliderWin.getHeader().setHeight(28);
 //
 //		erase = false;
-
-	}
+//	}
 
 	public void changeStrokeSize(int tempStrokeSize) {
 		if (currentColor == KnownColor.WHITE) {
@@ -784,7 +783,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 			myHistoryManagerRedoStack.historys.add(tempHistory);
 		}
 
-		redrawfromCache();
+		renewImage(myHistoryManager.historys);
 		// renewImage();
 		// clearSurface();
 		// currentState = currentState - 0.03;
@@ -804,7 +803,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 					.remove(i);
 			myHistoryManager.addHistory(tempHistory);
 		}
-		redrawfromCache();
+		renewImage(myHistoryManager.historys);
 	}
 
 	public void redraw() {
