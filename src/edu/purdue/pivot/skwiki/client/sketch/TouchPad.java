@@ -159,6 +159,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 			}
 		});
 
+		inFocus = true; 
+		
 		/* needs a mouse handler for M.S. Surface */
 
 		this.addTouchStartHandler(new TouchStartHandler() {
@@ -458,8 +460,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 			i++;
 		}
 	}
-
-	/* when the sketch is downloaded */
+	
 	public void renewImage(ArrayList<AbstractHistory> newHistorys) {
 		myHistoryManager.clearHistory();
 		indexes.clear();
@@ -470,6 +471,22 @@ public class TouchPad extends Surface implements AttachedPanel {
 		for (AbstractHistory tempHistory : newHistorys) {
 			myHistoryManager.addHistory(tempHistory);
 		}
+
+		surface.clear();
+		renewImage();
+	}
+
+	/* when the sketch is downloaded */
+	public void renewImage() {
+		//myHistoryManager.clearHistory();
+		indexes.clear();
+		cache.clear();
+		colorCache.clear();
+		strokeSizes.clear();
+		
+//		for (AbstractHistory tempHistory : newHistorys) {
+//			myHistoryManager.addHistory(tempHistory);
+//		}
 
 		surface.clear();
 		int start = 0;
@@ -783,7 +800,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 			myHistoryManagerRedoStack.historys.add(tempHistory);
 		}
 
-		renewImage(myHistoryManager.historys);
+		renewImage();
 		// renewImage();
 		// clearSurface();
 		// currentState = currentState - 0.03;
@@ -791,19 +808,18 @@ public class TouchPad extends Surface implements AttachedPanel {
 	}
 
 	public void redo() {
-		int removeSize = 20;
 		int redoStackSize = myHistoryManagerRedoStack.historys.size();
-
-		if (redoStackSize == 0) {
-			return;
-		}
-
-		for (int i = redoStackSize - 1; i > redoStackSize - removeSize; i--) {
-			AbstractHistory tempHistory = myHistoryManagerRedoStack.historys
-					.remove(i);
+		for (int i = redoStackSize - 1; i > 0; i--) {
+			AbstractHistory tempHistory = myHistoryManagerRedoStack.historys.get(i);
+			if (tempHistory.getType() == "PathHeadHistory") {
+				tempHistory = myHistoryManagerRedoStack.historys.remove(i);
+				myHistoryManager.addHistory(tempHistory);
+				break;
+			}
+			tempHistory = myHistoryManagerRedoStack.historys.remove(i);
 			myHistoryManager.addHistory(tempHistory);
 		}
-		renewImage(myHistoryManager.historys);
+		renewImage();
 	}
 
 	public void redraw() {
