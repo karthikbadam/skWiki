@@ -6,18 +6,18 @@
 
 .demo-WindowExample .demo-WindowPanel:hover {
 	background-color: rgba(209, 203, 186, .0);
-	border: 2px solid rgba(209, 203, 186, .5);
+	border: 2px solid rgba(209, 203, 186, .8);
 }
 
 .demo-WindowExample .demo-WindowPanel:active {
 	background-color: rgba(209, 203, 186, .0);
-	border: 2px solid rgba(209, 203, 186, .75);
+	border: 2px solid rgba(209, 203, 186, 1);
 	z-index: 100;
 }
 
 .demo-WindowExample .demo-WindowPanel .window-focus {
-	background-color: rgba(209, 203, 186, .05);
-	border: 0px solid rgba(209, 203, 186, .25);
+	background-color: rgba(209, 203, 186, .5);
+	border: 1px solid rgba(209, 203, 186, .05);
 }
 
 .demo-background {
@@ -29,6 +29,14 @@
 	color: #DDEEDD;
 	font-size: 15px;
 	background-color: rgba(209, 203, 186, .05);
+}
+
+.demo-WindowExample .demo-WindowPanel .demo-WindowPanel-header:hover {
+	background-color: rgba(209, 203, 186, .5);
+}
+
+.demo-WindowExample .demo-WindowPanel .demo-WindowPanel-header:active {
+	background-color: rgba(209, 203, 186, .8);
 }
 
 .dragdrop-handle {
