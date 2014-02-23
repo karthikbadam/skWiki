@@ -24,13 +24,9 @@ public class PathHeadHistory extends AbstractHistory{
 	}
 
 	
-	//TODO left for future
 	public String getColor()
 	{
-		String color = "";
-		
-		/*if(pathColor.get)*/
-		return "null";
+		return pathColor.getColorCode();
 	}
 
 	/*public void perform(HistoryStack myHistorystack)

@@ -294,9 +294,11 @@ public class WidgetManager {
 
 	/* add Image */
 	protected void addImage(String imageEditorUUID) {
+		
+		
 		this.imageEditorUUID = imageEditorUUID;
 		// Create a new multiuploader and attach it to the document
-		MultiUploader defaultUploader = new MultiUploader(FileInputType.LABEL);
+		MultiUploader defaultUploader = new MultiUploader();
 		imagePopup = new PopupPanel();
 		imagePopup.add(defaultUploader);
 		imagePopup.show();

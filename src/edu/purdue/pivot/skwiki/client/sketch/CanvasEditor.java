@@ -39,26 +39,6 @@ public class CanvasEditor {
 		this.idField = uid;
 		this.canvasEditorID = uuid;
 		myPad = new TouchPad(canvasEditorID, idField, toolbars, windowWidth, windowHeight);
-
-//		myAnimationSliderBar
-//				.addBarValueChangedHandler(new BarValueChangedHandler() {
-//					@Override
-//					public void onBarValueChanged(BarValueChangedEvent event) {
-//						/*
-//						 * Animation handler
-//						 */
-//						myPad.clearSurface();
-//
-//						double statePercent = (event.getValue() + 0.0)
-//								/ (slideBarMax + 0.0);
-//						currentSliderFactor = statePercent;
-//						valueBox.setText("" + statePercent);
-//						if (event.getValue() != 0) {
-//							myPad.moveToState(statePercent);
-//						}
-//					}
-//				});
-
 	}
 
 	// preview handler
@@ -101,8 +81,6 @@ public class CanvasEditor {
 			myLocalHistory.returnHistoryList.add(tempHistory);
 		}
 		myPad.renewImage(myLocalHistory.returnHistoryList);
-		
-		
 	}
 	
 	//Fill the canvas editor after check out 
@@ -164,8 +142,6 @@ public class CanvasEditor {
 		}
 		myPad.renewImage(myLocalHistory.returnHistoryList);
 		currentRevision = result.updateRevision;
-
-		
 	}
 
 }
