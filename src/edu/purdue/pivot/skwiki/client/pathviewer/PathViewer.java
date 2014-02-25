@@ -44,7 +44,7 @@ public class PathViewer extends AbsolutePanel {
 			int windowWidth, int windowHeight) {
 		super();
 		this.checkoutHandler = checkoutHandler;
-		this.setSize("2160px", "7500px");
+		this.setSize("1080px", "7500px");
 		this.revisionHistory = revisionHistory;
 		this.add(canvas);
 		this.uid = uid;
@@ -73,7 +73,7 @@ public class PathViewer extends AbsolutePanel {
 			return;
 		}
 		
-		this.setSize("2500px", 150*revisionHistory.size()+"px");
+		this.setSize("1080px", 70*revisionHistory.size()+"px");
 		
 		// setup the column
 		boolean hasUID = false;

@@ -507,11 +507,11 @@ public class TouchPad extends Surface implements AttachedPanel {
 					canvas_context.setLineWidth(strokeSize);
 					canvas_context.setLineCap(LineCap.ROUND);
 					canvas_context.setLineJoin(LineJoin.ROUND);
+					canvas_context.stroke();
 					canvas_context.beginPath();
 					canvas_context.moveTo(x, y);
 				}
 				canvas_context.lineTo(x, y);
-				canvas_context.stroke();
 				strokePointCount++;
 				
 			} else if (history.getType() == "PathHeadHistory") {
@@ -520,6 +520,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 				
 			}
 		}
+		canvas_context.stroke();
+		
 	}
 
 	/* when the sketch is downloaded */
@@ -646,7 +648,6 @@ public class TouchPad extends Surface implements AttachedPanel {
 					cache.add(new Vector2(nextx, nexty));
 					
 					canvas_context.quadraticCurveTo(x, y, nextx, nexty);
-					canvas_context.stroke();
 					
 					/* adaptive buffering using Hermite interpolation */
 					int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
@@ -674,6 +675,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 				p2.y = y;
 				strokePointCount++;
 				strokePointCount++;
+				canvas_context.stroke();
 				
 				/* add index to indexes list */
 				indexes.add(cache.size());
@@ -689,12 +691,12 @@ public class TouchPad extends Surface implements AttachedPanel {
 				canvas_context.arc(x, y, ((double) strokeSize) * 0.4, 0,
 						2 * Math.PI);
 				canvas_context.fill();
-				canvas_context.stroke();
 				
 				bufferCount = 3;
 
 			}
 		}
+		canvas_context.stroke();
 		strokePointCount = 0;
 	}
 
