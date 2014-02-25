@@ -11,6 +11,7 @@ public class MyCircle extends Circle {
 		super(x, y, radius);
 		this.index = index;
 		this.setFillColor("#E7E8F0");
+		this.setFillOpacity(0.7);
 	}
 
 	public int getIndex() {

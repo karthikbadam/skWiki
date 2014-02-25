@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.mogaleaf.client.common.widgets.ColorHandler;
 import com.mogaleaf.client.common.widgets.SimpleColorPicker;
+import com.smartgwt.client.types.HeaderControls;
+import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.ImgButton;
 import com.smartgwt.client.widgets.Slider;
 import com.smartgwt.client.widgets.events.CloseClickEvent;
@@ -87,14 +89,20 @@ public class CanvasToolbar extends Composite {
 		sliderPanel.add(hSlider);
 		sliderWin.setTitle("Stroke Size");
 		sliderWin.setShowMinimizeButton(true);
-		sliderWin
-				.addCloseClickHandler(new com.smartgwt.client.widgets.events.CloseClickHandler() {
-
+		HeaderControl close = new HeaderControl(HeaderControl.CLOSE,
+				new com.smartgwt.client.widgets.events.ClickHandler() {
 					@Override
-					public void onCloseClick(CloseClickEvent event) {
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
 						sliderWin.hide();
 					}
+
 				});
+
+		close.setWidth(25);
+		close.setHeight(25);
+		sliderWin.setHeaderControls(HeaderControls.HEADER_LABEL, close);
+
 
 		sliderWin.setCanDragReposition(true);
 		sliderWin.setCanDragResize(true);
@@ -102,7 +110,7 @@ public class CanvasToolbar extends Composite {
 		sliderWin.setAutoSize(true);
 		sliderWin.setCanDragReposition(true);
 		sliderWin.setCanDragResize(true);
-
+		
 		/* settings window for color palette */
 		colorWin.setTitle("Color Palette");
 		final SimpleColorPicker picker = new SimpleColorPicker();
@@ -124,24 +132,32 @@ public class CanvasToolbar extends Composite {
 			}
 		});
 
+		
+		HeaderControl closeColorWin = new HeaderControl(HeaderControl.CLOSE,
+				new com.smartgwt.client.widgets.events.ClickHandler() {
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
+						colorWin.hide();
+					}
+
+				});
+
+		closeColorWin.setWidth(25);
+		closeColorWin.setHeight(25);
+		colorWin.setHeaderControls(HeaderControls.HEADER_LABEL, closeColorWin);
+
 		picker.setHeight("250px");
 		picker.setWidth("160px");
 
 		colorWin.addItem(new SimplePanel(picker));
-		colorWin.addCloseClickHandler(new com.smartgwt.client.widgets.events.CloseClickHandler() {
-
-			@Override
-			public void onCloseClick(CloseClickEvent event) {
-				colorWin.hide();
-			}
-		});
-
+		
 		colorWin.setCanDragReposition(true);
 		colorWin.setCanDragResize(true);
 		colorWin.setAutoSize(true);
 		colorWin.setCanDragReposition(true);
 		colorWin.setCanDragResize(true);
-
+		
 	}
 
 	
@@ -184,7 +200,7 @@ public class CanvasToolbar extends Composite {
 			} else if (sender == strokeSize) {
 				sliderWin.show();
 				sliderWin.setLeft(800 - sliderWin.getWidth() - 10);
-				sliderWin.setTop(700 - sliderWin.getHeight() - 20);
+				sliderWin.setTop(500 - sliderWin.getHeight() - 20);
 				sliderWin.getHeader().setHeight(28);
 			} else if (sender == eraser) {
 				for (int i = 0; i < touchpads.size(); i++) {

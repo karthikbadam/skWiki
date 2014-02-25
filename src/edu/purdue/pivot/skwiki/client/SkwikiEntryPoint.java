@@ -89,12 +89,12 @@ public class SkwikiEntryPoint implements EntryPoint {
 
 	String name;
 	public TextBox Log = new TextBox();
-	
+
 	// Last save
 	Date lastTime = new Date();
 	public final static long SECOND_MILLIS = 1000;
-	public final static long MINUTE_MILLIS = SECOND_MILLIS*60;
-	
+	public final static long MINUTE_MILLIS = SECOND_MILLIS * 60;
+
 	// Widget manager
 	public WidgetManager widgets;
 
@@ -264,7 +264,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		ProjectPack tempProjecPack1 = new ProjectPack(projectName,
 				projectDescription);
 		packtoSend.projectInfo = tempProjecPack1;
-		packtoSend.id = uid; 
+		packtoSend.id = uid;
 
 		try {
 			createProjectRevService.createProject(packtoSend,
@@ -590,7 +590,8 @@ public class SkwikiEntryPoint implements EntryPoint {
 				.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
 
 					@Override
-					public void onClick(com.smartgwt.client.widgets.events.ClickEvent event) {
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
 						// Window.alert("Save Option Clicked");
 						SC.confirm("Sketch will be saved on the server",
 								new BooleanCallback() {
@@ -638,8 +639,9 @@ public class SkwikiEntryPoint implements EntryPoint {
 						// Window.alert("Canvas selected");
 						String canvasEditorUUID = UUID.uuid(8, 16);
 						widgets.addCanvas("Canvas" + canvasEditorUUID, 1);
-//						rootPanel.setWidgetPosition(menuPanel, 10, windowHeight
-//								/ 2 - menuPanel.getOffsetHeight() / 2);
+						// rootPanel.setWidgetPosition(menuPanel, 10,
+						// windowHeight
+						// / 2 - menuPanel.getOffsetHeight() / 2);
 					}
 
 				});
@@ -691,7 +693,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		//
 		// });
 		//
-		 
+
 		// image
 		ImgButton image_button = new ImgButton();
 		image_button.setWidth(48);
@@ -704,22 +706,22 @@ public class SkwikiEntryPoint implements EntryPoint {
 		image_button.setLabelVPad(10);
 		menuPanel.setWidget(3, 0, image_button);
 
-//		Image image_image = new Image("images/image.png");
-//		Button image = new Button();
-//		image.getElement().appendChild(image_image.getElement());
-//		image.setStyleName("gwt-ButtonWidget");
-//		image.setSize(65 + "px", 65 + "px");
-//		menuPanel.setWidget(2, 2, image);
-		
+		// Image image_image = new Image("images/image.png");
+		// Button image = new Button();
+		// image.getElement().appendChild(image_image.getElement());
+		// image.setStyleName("gwt-ButtonWidget");
+		// image.setSize(65 + "px", 65 + "px");
+		// menuPanel.setWidget(2, 2, image);
+
 		image_button
-		.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
-			@Override
-			public void onClick(
-					com.smartgwt.client.widgets.events.ClickEvent event) {
-					String imageEditorUUID = UUID.uuid(8, 16);
-					widgets.addImage("Image" + imageEditorUUID);
-		}
-		});
+				.addClickHandler(new com.smartgwt.client.widgets.events.ClickHandler() {
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
+						String imageEditorUUID = UUID.uuid(8, 16);
+						widgets.addImage("Image" + imageEditorUUID);
+					}
+				});
 
 		// path viewer
 		preview = new PreviewWidget(windowWidth / 4, windowHeight / 4,
@@ -883,6 +885,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		// }
 		// });
 
+		/* refresh button for thumbnail path viewer */
 		HeaderControl refresh = new HeaderControl(HeaderControl.REFRESH,
 				new com.smartgwt.client.widgets.events.ClickHandler() {
 					@Override
@@ -918,7 +921,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 					public void onClick(
 							com.smartgwt.client.widgets.events.ClickEvent event) {
 						new CheckIDHandler().onClick(null);
-						pathViewer.setPathViewer();
+						// pathViewer.setPathViewer();
 						pathViewer.setVisible(true);
 					}
 				});
@@ -946,8 +949,8 @@ public class SkwikiEntryPoint implements EntryPoint {
 
 				});
 
-		buttonPanel.addMember(refresh_button);
-		buttonPanel.addMember(fullscreen_button);
+		//buttonPanel.addMember(refresh_button);
+		//buttonPanel.addMember(fullscreen_button);
 		buttonPanel.addMember(clone_button);
 
 		// new path viewer
@@ -999,7 +1002,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		navigationPanel.addMember(hLayout);
 		navigationPanel.addMember(entityList);
 
-		// create a new pathviewer panel
+		/* create a new pathviewer panel */
 		final com.smartgwt.client.widgets.Window navigationWin = new com.smartgwt.client.widgets.Window();
 		navigationWin.setTitle("Path Viewer");
 		navigationWin
@@ -1010,6 +1013,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 					}
 				});
 
+		/* close button for thumbnail pathviewer window */
 		HeaderControl close = new HeaderControl(HeaderControl.CLOSE,
 				new com.smartgwt.client.widgets.events.ClickHandler() {
 					@Override
@@ -1024,6 +1028,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 		close.setWidth(25);
 		close.setHeight(25);
 
+		/* close button for navigation window */
 		HeaderControl close2 = new HeaderControl(HeaderControl.CLOSE,
 				new com.smartgwt.client.widgets.events.ClickHandler() {
 					@Override
@@ -1037,7 +1042,35 @@ public class SkwikiEntryPoint implements EntryPoint {
 		close2.setWidth(25);
 		close2.setHeight(25);
 
-		navigationWin.setHeaderControls(HeaderControls.HEADER_LABEL, close2);
+		/* refresh button for navigation window */
+		HeaderControl refresh2 = new HeaderControl(HeaderControl.REFRESH,
+				new com.smartgwt.client.widgets.events.ClickHandler() {
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
+						new CheckIDHandler().onClick(null);
+						pathViewer.setVisible(true);
+					}
+
+				});
+		refresh2.setWidth(25);
+		refresh2.setHeight(25);
+
+		HeaderControl maximize2 = new HeaderControl(HeaderControl.MAXIMIZE,
+				new com.smartgwt.client.widgets.events.ClickHandler() {
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
+						
+					}
+
+				});
+		maximize2.setWidth(25);
+		maximize2.setHeight(25);
+
+		
+		navigationWin.setHeaderControls(HeaderControls.HEADER_LABEL, refresh2,
+				maximize2, close2);
 
 		pathViewerWin.setHeaderControls(HeaderControls.HEADER_LABEL, refresh,
 				close);
@@ -1057,18 +1090,15 @@ public class SkwikiEntryPoint implements EntryPoint {
 							com.smartgwt.client.widgets.events.ClickEvent event) {
 						if (!navigationWin.isVisible()
 								|| !navigationWin.isDrawn()) {
-							new CheckIDHandler().onClick(null);
+							// new CheckIDHandler().onClick(null);
 							navigationWin.show();
 							navigationWin.getHeader().setHeight(28);
 
-							pathViewer.setPathViewer();
+							// pathViewer.setPathViewer();
 							pathViewer.setVisible(true);
 							navigationWin.setLeft(windowWidth
 									- navigationWin.getWidth() - 30);
 							navigationWin.setTop(60);
-
-						} else if (navigationWin.isVisible()) {
-							navigationWin.hide();
 						}
 					}
 
@@ -1110,20 +1140,21 @@ public class SkwikiEntryPoint implements EntryPoint {
 				// });
 				Date date = new Date();
 				int diff = minutesDiff(lastTime, date);
-				
-				Log.setText("Last Saved "+diff+" min ago");
+
+				Log.setText("Last Saved " + diff + " min ago");
 			}
 		};
 		timer.scheduleRepeating(1000 * 60);
 	}
 
- public static int minutesDiff( Date earlierDate, Date laterDate ) {
-    if( earlierDate == null || laterDate == null ) return 0;
-    
-    return (int)((laterDate.getTime()/MINUTE_MILLIS) - (earlierDate.getTime()/MINUTE_MILLIS));
- }
-    
-	
+	public static int minutesDiff(Date earlierDate, Date laterDate) {
+		if (earlierDate == null || laterDate == null)
+			return 0;
+
+		return (int) ((laterDate.getTime() / MINUTE_MILLIS) - (earlierDate
+				.getTime() / MINUTE_MILLIS));
+	}
+
 	class CommitHandler implements ClickHandler {
 		/**
 		 * Fired when the user clicks on the commitButton.
@@ -1181,41 +1212,38 @@ public class SkwikiEntryPoint implements EntryPoint {
 				// ServiceDefTarget endpoint = (ServiceDefTarget) commitService;
 				// PhonegapUtil.prepareService(endpoint,
 				// "http://127.0.0.1:8080/Skwiki/skWiki/", "greet");
-				commitService.commit(packtoSend,
-						new AsyncCallback<DataPack>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								// Show the RPC error message to the user
-								Log.setText("GWT ERROR: Failed to call server--SERVER_ERROR");
-							}
+				commitService.commit(packtoSend, new AsyncCallback<DataPack>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						// Show the RPC error message to the user
+						Log.setText("GWT ERROR: Failed to call server--SERVER_ERROR");
+					}
 
-							@Override
-							public void onSuccess(DataPack result) {
-								Date date = new Date();
-								DateTimeFormat dtf = DateTimeFormat
-										.getFormat("yyyy/MM/dd:HH:mm:ss");
+					@Override
+					public void onSuccess(DataPack result) {
+						Date date = new Date();
+						DateTimeFormat dtf = DateTimeFormat
+								.getFormat("yyyy/MM/dd:HH:mm:ss");
 
-								widgets.layoutSettleIndex += result.layoutHisotrySettleIndex;
-								
-								Log.setText("GWT Success: Successfully commited at "
-										+ dtf.format(date,
-												TimeZone.createTimeZone(240)));
-								
-								lastTime = date;
-								
-								// show the commit result, update the
-								// information label;
-								for (MyCanvasEditor tempCanvasEditor : widgets.canvasEditors) {
-									tempCanvasEditor
-											.commitOnSuccess(result.updateCanvasMap
-													.get(tempCanvasEditor
-															.getID()));
-								}
-								fromRevision = result.updateRevision;
-								// Window.alert(""+fromRevision);
+						widgets.layoutSettleIndex += result.layoutHisotrySettleIndex;
 
-							}
-						});
+						Log.setText("GWT Success: Successfully commited at "
+								+ dtf.format(date, TimeZone.createTimeZone(240)));
+
+						lastTime = date;
+
+						// show the commit result, update the
+						// information label;
+						for (MyCanvasEditor tempCanvasEditor : widgets.canvasEditors) {
+							tempCanvasEditor
+									.commitOnSuccess(result.updateCanvasMap
+											.get(tempCanvasEditor.getID()));
+						}
+						fromRevision = result.updateRevision;
+						// Window.alert(""+fromRevision);
+
+					}
+				});
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
 			}
@@ -1249,8 +1277,9 @@ public class SkwikiEntryPoint implements EntryPoint {
 									// Window.alert("new ID");
 									return;
 								}
-								updateRevisionHistory_List(result);
 
+								updateRevisionHistory_List(result);
+								pathViewer.setPathViewer();
 							}
 						});
 			} catch (IllegalArgumentException e) {

@@ -1,5 +1,7 @@
 package edu.purdue.pivot.skwiki.server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -19,6 +21,11 @@ import edu.purdue.pivot.skwiki.shared.RevisionHistory;
 public class CheckProjectListServiceImpl extends RemoteServiceServlet implements
 CheckProjectListService {
 
+	private String current_project_name = "";
+	private String main_database_name = "mainbase";
+	private String postgres_name = "postgres";
+	private String postgres_password = "fujiko";
+	
 	private String escapeHtml(String html) {
 		if (html == null) {
 			return null;
@@ -28,21 +35,61 @@ CheckProjectListService {
 	}
 
 	public DataPack checkProjectList(DataPack input) throws IllegalArgumentException {
+		
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "postchi_testing";
+		main_database_name = "mainbase";
+	    
+		try {
+	    	br = new BufferedReader(new FileReader(this.getServletContext().getRealPath("/serverConfig.txt")));
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
 
-
+	        while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	         
+	        br.close();
+	    
+	    } catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+	       
+	    }
+		
 		String serverInfo = getServletContext().getServerInfo();
 		String userAgent = getThreadLocalRequest().getHeader("User-Agent");
 
 
-		System.err.println(input.updatedHistory.size()+"");
-		System.out.println("Server Side code");
 		String returnInput = input.toString();
 		userAgent = escapeHtml(userAgent);
 		String id = input.id;
 
 		DataPack returnPack = new DataPack();
-		String MAIN_DATABASE_NAME = "main";
-
+		
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -65,55 +112,24 @@ CheckProjectListService {
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/"+MAIN_DATABASE_NAME, "postgres",
-					"984711");
+					"jdbc:postgresql://127.0.0.1:5432/"+main_database_name, "postgres",
+					"fujiko");
 			st = connection.createStatement();
-
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
 
 			rs = st.executeQuery("SELECT count(*) FROM"+" projects ");
-			//int rowCount = 0;
-			while (rs.next()) {
-				System.out.print(rs.getInt(1)+" ");
-				returnPack.projectsNameList.add(rs.getString(1));
-				//System.out.print(rs.getInt(1)+" ");
-				
-				//System.out.print(rs.getString(2)+" ");
-			//	rowCount++;
-			}
-			
-			System.out.print("project name list size"+returnPack.projectsNameList.size());
 
-			
-			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/"+MAIN_DATABASE_NAME, "postgres",
-					"984711");
+			while (rs.next()) {
+				returnPack.projectsNameList.add(rs.getString(1));
+			}
+						
 			st = connection.createStatement();
 
-			//String selectHead="select ";
-
-			//String insertTable = "";
-			//String values = "";
-
 			rs = st.executeQuery("SELECT count(*) FROM"+" users ");
-			//int rowCount = 0;
+
 			while (rs.next()) {
-				System.out.print(rs.getInt(1)+" ");
 				returnPack.userList.add(rs.getString(1));
-				//System.out.print(rs.getInt(1)+" ");
-				
-				//System.out.print(rs.getString(2)+" ");
-			//	rowCount++;
 			}
 			
-			System.out.print("user name list size"+returnPack.userList.size());
-
-			
-			
-
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
@@ -137,24 +153,6 @@ CheckProjectListService {
 			}
 		}
 
-
-/*
-		for(AbstractHistory tempHistory: input.updatedHistory)
-		{
-			returnStr+=tempHistory.getType();
-		}
-
-
-		if(newID)
-		{
-			returnPack.newID = true;
-		}
-		else
-		{
-			returnPack.newID = false;
-
-		}*/
-		//return returnStr;
 		return returnPack;
 	}
 }

@@ -27,8 +27,10 @@ import gwtupload.shared.UConsts;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -53,7 +55,12 @@ import javax.servlet.http.HttpServletResponse;
 public class ImageUploaderServlet extends UploadAction {
 
 	private static final long serialVersionUID = 1L;
-
+	private String current_project_name = "";
+	private String main_database_name = "";
+	private String postgres_name = "postgres";
+	private String postgres_password = "fujiko";
+	
+	
 	Hashtable<String, String> receivedContentTypes = new Hashtable<String, String>();
 	/**
 	 * Maintain a list with received files and their content types.
@@ -73,35 +80,59 @@ public class ImageUploaderServlet extends UploadAction {
 		
 		connection = null;
 		Statement st = null;
-		ResultSet rs = null;
-		ResultSet rst = null;
 		
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+	    
 		try {
+	    	br = new BufferedReader(new FileReader(this.getServletContext().getRealPath("/serverConfig.txt")));
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
 
+	        while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+	        
+	        //String everything = sb.toString();
+	        //System.out.println("file: "+everything);
+	        br.close();
+	    
+	    } catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+	       
+	    }
+
+			
+		try {			
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing", "postgres",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name, "postgres",
 					"fujiko");
-
-			//int targetRevision = input.updateRevision;
-			//int nonWholeSequence_id = input.nonWholeSequence_id;
-
-
-			int directFromRevision = 0;
-
-//			String selectStr = "select from_revision from currentrevision where revision = "
-//					+targetRevision;
-//			//revisionHistoryList.add(targetRevision);
-//			System.out.println("targetRevision "+targetRevision);
-//			st = connection.createStatement();
-//			rs = st.executeQuery(selectStr);
-//
-//			while(rs.next())
-//			{
-//				directFromRevision = rs.getInt(1);
-//
-//				//canvasNameList.add(id);
-//			}
-
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,25 +144,11 @@ public class ImageUploaderServlet extends UploadAction {
 			if (false == item.isFormField()) {
 				cont++;
 				try {
-					// / Create a new file based on the remote file name in the
-					// client
-					// String saveName =
-					// item.getName().replaceAll("[\\\\/><\\|\\s\"'{}()\\[\\]]+",
-					// "_");
-					// File file =new File("/tmp/" + saveName);
-
-					// / Create a temporary file placed in /tmp (only works in
-					// unix)
-					// File file = File.createTempFile("upload-", ".bin", new
-					// File("/tmp"));
-
-					// / Create a temporary file placed in the default system
-					// temp folder
 					String uuid = UUID.randomUUID().toString();
-//					String saveName = uuid + '.'
-//							+ FilenameUtils.getExtension(item.getName());
-//					
-					String saveName = item.getName();
+					String saveName = uuid + '.'
+							+ FilenameUtils.getExtension(item.getName());
+					
+//					String saveName = item.getName();
 					
 					//write to database
 					File file = new File(saveName);

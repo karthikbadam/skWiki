@@ -9,13 +9,13 @@ public class Connection {
 	private ViewLabel label2;
 	int Vspace = 50;
 	
-	final Path path;// = new Path(startX, startY);
+	Path path;// = new Path(startX, startY);
 
 	public Connection(ViewLabel label1, ViewLabel label2) {
 		this.label1 = label1;
 		this.label2 = label2;
 
-		// path = new Path()
+		path = new Path(0,0);
 		// path.lineRelativelyTo(endX, endY);
 		if (label1.getPosX() == label2.getPosX()) {
 			
@@ -26,38 +26,40 @@ public class Connection {
 				int y1 = label1.getPosY();
 				
 				path = new Path(x1, y1);
-				path.setFillOpacity(100);
-				path.setStrokeColor("gray");
-
+				path.setStrokeColor("rgba(50, 50, 50, 0.5)");
+				path.setFillOpacity(0);
+				
 				int x2 = label2.getPosX();
 				int y2 = label2.getPosY();
 				
 				//Window.alert("x2 y2"+ x2+" "+y2);
 				
-				int curveOffset = 40;
+				int curveOffset = (int) (40.0 * (1.0 + Math.random()));
 				
-				int control1x = x1 + (-x1+x2)/3-curveOffset;
+				int control1x = x1 + (-x1+x2)/3 - curveOffset;
 				int control1y = y1 +  (-y1+y2)/3;
 				
-				int control2x = x1+ 2*(-x1+x2)/3-curveOffset;
+				int control2x = x1+ 2*(-x1+x2)/3 - curveOffset;
 				int control2y = y1 + 2*(-y1+y2)/3;
 				
 				//Window.alert("control2x control2y "+ control2x+" "+control2y);
+				path.moveTo(x1, y1);
 				path.curveTo(control1x, control1y, 
 						control2x, control2y, x2, y2);
-				path.moveTo(x1, y1);
+				path.moveTo(x2, y2);
 			
-			} else {
+			} else if (Math.abs(label1.getPosY() - label2.getPosY()) <= Vspace){
 				int x1 = label1.getPosX();
 				int y1 = label1.getPosY();
 
 				path = new Path(x1, y1);
 				path.setFillOpacity(0);
-				path.setStrokeColor("gray");
-
+				path.setStrokeColor("rgba(50, 50, 50, 0.3)");
+				path.setStrokeOpacity(0.7);
+				
 				int x2 = label2.getPosX();
 				int y2 = label2.getPosY();
-
+				path.moveTo(x1, y1);
 				path.lineTo(x2, y2);
 			}
 						
@@ -66,23 +68,28 @@ public class Connection {
 			int y1 = label1.getPosY();
 
 			path = new Path(x1, y1);
-			path.setStrokeColor("gray");
-
+			path.setStrokeColor("rgba(50, 50, 50, 0.3)");
+			path.setFillOpacity(0);
+			path.setStrokeOpacity(0.7);
+			
 			int x2 = label2.getPosX();
 			int y2 = label2.getPosY();
+			path.moveTo(x1, y1);
 			path.lineTo(x2, y2);
 			
 			
-		} else // **** x1>x2
-		{
+		} else if (label1.getPosX() > label2.getPosX())  {
 			int x1 = label1.getPosX();
 			int y1 = label1.getPosY();
 
 			path = new Path(x1, y1);
-			path.setStrokeColor("gray");
-
+			path.setStrokeColor("rgba(50, 50, 50, 0.3)");
+			path.setFillOpacity(0);
+			path.setStrokeOpacity(0.7);
+			
 			int x2 = label2.getPosX();
 			int y2 = label2.getPosY();
+			path.moveTo(x1, y1);
 			path.lineTo(x2, y2);
 
 		}

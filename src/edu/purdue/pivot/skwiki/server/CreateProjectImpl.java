@@ -1,5 +1,7 @@
 package edu.purdue.pivot.skwiki.server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -18,6 +20,11 @@ import edu.purdue.pivot.skwiki.shared.DataPack;
 public class CreateProjectImpl extends RemoteServiceServlet implements
 		CreateProjectService {
 
+	private String main_database_name = "";
+	private String postgres_name = "postgres";
+	private String postgres_password = "fujiko";
+	private String current_project_name = "";
+	
 	private String escapeHtml(String html) {
 		if (html == null) {
 			return null;
@@ -28,6 +35,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 	public DataPack createProject(DataPack input)
 			throws IllegalArgumentException {
+
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+			}
+
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
 
 		String id = input.id;
 
@@ -53,10 +107,10 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
-			
+
 			/* insert into projects */
 			int returnCode = st.executeUpdate(" insert into  "
 					+ " projects  values ( " + "\'"
@@ -64,7 +118,7 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 					+ input.projectInfo.projectDescription + "\' " + " );");
 
 			st = connection.createStatement();
-			
+
 			/* insert project-user details */
 			returnCode = st.executeUpdate(" insert into  "
 					+ " user_project  values ( " + "\'"
@@ -86,7 +140,7 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 					+ "from_revision int," + "comment varchar(200)" + ");" + ""
 					+ "create table tag(" + "revision int,"
 					+ "uid varchar(50)," + "entity_type varchar(10),"
-					+ "entity_id varchar(30)," + "tag varchar(40)" + ");" + "" 
+					+ "entity_id varchar(30)," + "tag varchar(40)" + ");" + ""
 					+ "create table lastRevision(" + "uid varchar(50),"
 					+ "entity_id varchar(50)," + "workingrevision int,"
 					+ "revision int," + "last_subRevision int,"
@@ -129,6 +183,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 		DataPack returnPack = new DataPack();
 
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
+
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -149,8 +250,8 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
 
 			/* insert new user */
@@ -161,7 +262,7 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 			returnPack.isSuccess = (returnCode >= 0);
 			returnPack.id = input.userInfo.userName;
 			returnPack.projectName = input.projectName;
-			
+
 		} catch (SQLException e) {
 
 			System.out.println("Connection Failed! Check output console");
@@ -193,6 +294,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 		DataPack returnPack = new DataPack();
 
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
+
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -212,10 +360,10 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
-			
+
 			/* find if the user, password combination exists */
 			rs = st.executeQuery("select count(*) from users where "
 					+ "username = " + "\'" + input.userInfo.userName
@@ -237,7 +385,7 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		} catch (SQLException e) {
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
-			
+
 		} finally {
 			try {
 				if (rs != null) {
@@ -262,6 +410,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 		DataPack returnPack = new DataPack();
 
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
+
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -281,8 +476,8 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
 
 			/* get all user names */
@@ -295,7 +490,7 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		} catch (SQLException e) {
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
-		
+
 		} finally {
 			try {
 				if (rs != null) {
@@ -320,6 +515,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 		DataPack returnPack = new DataPack();
 
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
+
 		try {
 			Class.forName("org.postgresql.Driver");
 
@@ -337,8 +579,8 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
 
 			/* get project list */
@@ -349,11 +591,10 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 				returnPack.projectInfo.projectDescripList.add(rs.getString(2));
 			}
 
-			
 			returnPack.isSuccess = true;
-			
+
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 			returnPack.userInfo.existed = true;
 
@@ -379,6 +620,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 	public DataPack addUserToProject(DataPack input)
 			throws IllegalArgumentException {
 
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
+
 		DataPack returnPack = new DataPack();
 		String username = input.id;
 		String project_name = input.projectName;
@@ -403,10 +691,10 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
-			
+
 			/* insert user into user_project table */
 			int returnCode = st.executeUpdate("insert into  "
 					+ " user_project  values ( " + "\'" + username + "\'"
@@ -414,7 +702,7 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			
+
 		} finally {
 			try {
 				if (rs != null) {
@@ -437,6 +725,53 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 
 	public DataPack removeUserFromProject(DataPack input)
 			throws IllegalArgumentException {
+
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
 
 		DataPack returnPack = new DataPack();
 		String userName = input.id;
@@ -461,8 +796,8 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
 
 			/* remove user from user_project */
@@ -495,6 +830,54 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 	}
 
 	boolean checkUserInProject(String user_name, String project_name) {
+
+		/* read database details from file */
+		BufferedReader br;
+		current_project_name = "";
+		main_database_name = "";
+
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext()
+					.getRealPath("/serverConfig.txt")));
+			StringBuilder sb = new StringBuilder();
+			String line = br.readLine();
+
+			while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+			// String everything = sb.toString();
+			// System.out.println("file: "+everything);
+			br.close();
+
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+
+		}
+
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -514,8 +897,8 @@ public class CreateProjectImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/mainbase", "postgres",
-					"fujiko");
+					"jdbc:postgresql://127.0.0.1:5432/" + main_database_name,
+					"postgres", "fujiko");
 			st = connection.createStatement();
 
 			/* check if user belongs to a project */

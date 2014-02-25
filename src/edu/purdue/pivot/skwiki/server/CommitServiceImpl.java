@@ -1,5 +1,7 @@
 package edu.purdue.pivot.skwiki.server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,7 +33,10 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		CommitService {
 
 	private String current_project_name = "";
-
+	private String main_database_name = "mainbase";
+	private String postgres_name = "postgres";
+	private String postgres_password = "fujiko";
+	
 	private String escapeHtml(String html) {
 		if (html == null) {
 			return null;
@@ -60,7 +65,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -152,7 +157,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -226,7 +231,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -279,7 +284,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		try {
 
 			connection = DriverManager.getConnection(
-					"jdbc:postgresql://127.0.0.1:5432/postchi_testing",
+					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name,
 					"postgres", "fujiko");
 			st = connection.createStatement();
 
@@ -324,7 +329,55 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 	public DataPack commit(DataPack input) throws IllegalArgumentException {
 
 		DataPack returnPack = new DataPack();
-		current_project_name = input.projectName;
+		//current_project_name = input.projectName;
+		
+		/* read database details from file */
+		BufferedReader br;
+		//main_database_name = "mainbase";
+	    
+		try {
+			br = new BufferedReader(new FileReader(this.getServletContext().getRealPath("/serverConfig.txt")));
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
+
+	        while (line != null) {
+	            String first = line.substring(0, line.lastIndexOf(':'));
+	            String last = line.substring(line.lastIndexOf(':') + 1);
+	            
+	            if (first.contains("content_database")) {
+	            	current_project_name = last;
+	            } 
+	            
+	            if (first.contains("owner_database")) {
+	            	main_database_name = last;
+	            }
+	            
+	            if (first.contains("username")) {
+	            	postgres_name = last;
+	            }
+	            
+	            if (first.contains("password")) {
+	            	postgres_password = last;
+	            }
+	            
+	        	sb.append(line);
+	            sb.append(System.lineSeparator());
+	            line = br.readLine();
+	        }
+	        
+	        
+	        //String everything = sb.toString();
+	        //System.out.println("file: "+everything);
+	        br.close();
+	    
+	    } catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} finally {
+	       
+	    }
+		
+		
 		String id = input.id; // user id
 		String fromUID = input.fromUID; // previous user id
 		int fromRevision = input.fromRevision; // parent revision
@@ -551,8 +604,8 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 				while (rs.next()) {
 
 					existingSubRev = rs.getInt(1);
-					System.out.println("current count of layout history in"
-							+ "the working layout table " + existingSubRev);
+//					System.out.println("current count of layout history in"
+//							+ "the working layout table " + existingSubRev);
 				}
 
 				/* insert each history element */
@@ -867,7 +920,6 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 			e.printStackTrace();
 		}
 
-		System.out.println("id:  " + input.id + "");
 		Connection connection = null;
 		Statement st = null;
 		ResultSet rs = null;

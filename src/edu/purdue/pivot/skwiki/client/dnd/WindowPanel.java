@@ -120,7 +120,7 @@ final public class WindowPanel extends FocusPanel {
 
 	private static final int BORDER_THICKNESS = 10;
 
-	private static final int BORDER_THICKNESS2 = 30;
+	private static final int BORDER_THICKNESS2 = 25;
 
 	private static final String CSS_DEMO_RESIZE_EDGE = "demo-resize-edge";
 

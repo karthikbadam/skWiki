@@ -100,6 +100,9 @@ public class TouchPad extends Surface implements AttachedPanel {
 	/* context2d */
 	Context2d canvas_context;
 
+	/* Boolean to check if the sketch is a preview */
+	
+	Boolean preview = false; 
 	public TouchPad(String uuid, String uid, float scaleWidth,
 			float scaleHeight, int windowWidth, int windowHeight) {
 		super((int) (5 * windowWidth * scaleWidth / 6),
@@ -113,7 +116,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 		this.fillBackground(KnownColor.TRANSPARENT);
 		myHistoryManager = new HistoryManager(this);
 		myHistoryManagerRedoStack = new HistoryManager(this);
-		canvas_context = this.getContext();
+		canvas_context = this.getContext();		
+		preview = true; 
 	}
 
 	public TouchPad(String uuid, String uid,
@@ -141,9 +145,6 @@ public class TouchPad extends Surface implements AttachedPanel {
 		top = this.getAbsoluteTop();
 		right = left + WIDTH;
 		bottom = top + HEIGHT;
-
-//		this.toolbars = toolbars2;
-//		toolbar = new CanvasToolbar(this);
 		
 		toolbar = CanvasToolbar.getInstance();
 		toolbar.addTouchPad(this);
@@ -314,8 +315,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 						/* adaptive buffering! based on distance between points */
 						int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
 								+ Math.pow(y - p2.y, 2));
-						bufferCount = ((int) distance / 4) > 2 ? (int) distance / 4
-								: 3;
+						bufferCount = ((int) distance / 10) > 6 ? 6 : 3;
 						bufferCount = bufferCount < 10 ? bufferCount : 10;
 
 						// logger.log(Level.SEVERE, "bufferCount "+
@@ -366,8 +366,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 						/* adaptive buffering using Hermite interpolation */
 						int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
 								+ Math.pow(y - p2.y, 2));
-						bufferCount = ((int) distance / 4) > 2 ? (int) distance / 4
-								: 3;
+						bufferCount = ((int) distance / 10) > 6 ? 6 : 3;
 						bufferCount = bufferCount < 10 ? bufferCount : 10;
 						// logger.log(Level.SEVERE, "bufferCount "+
 						// bufferCount);
@@ -481,7 +480,46 @@ public class TouchPad extends Surface implements AttachedPanel {
 		}
 
 		surface.clear();
-		renewImage();
+		if (preview) {
+			renewPreview();
+		} else {
+			renewImage();
+		}
+	}
+	
+	/* when the sketch is previewed */
+	private void renewPreview() {
+		int start = 0;
+		surface.clear();
+		for (start = 0; start < myHistoryManager.historys.size(); start++) {
+			AbstractHistory history = myHistoryManager.historys.get(start);
+			if (history.getType() == "AddHistory") {
+				Point endPos = ((AddHistory) history).endPos;
+				MyColor pathColor = ((AddHistory) history).pathColor;
+				strokeSize = ((AddHistory) history).strokeSize;
+				double x = endPos.getVector2().getX();
+				double y = endPos.getVector2().getY();
+
+				if (strokePointCount == 1) {
+					/* set stroke color, size, and shadow */
+					canvas_context.setStrokeStyle(pathColor.getColorCode());
+					canvas_context.setFillStyle(pathColor.getColorCode());
+					canvas_context.setLineWidth(strokeSize);
+					canvas_context.setLineCap(LineCap.ROUND);
+					canvas_context.setLineJoin(LineJoin.ROUND);
+					canvas_context.beginPath();
+					canvas_context.moveTo(x, y);
+				}
+				canvas_context.lineTo(x, y);
+				canvas_context.stroke();
+				strokePointCount++;
+				
+			} else if (history.getType() == "PathHeadHistory") {
+				strokePointCount = 0; 
+				strokePointCount++;
+				
+			}
+		}
 	}
 
 	/* when the sketch is downloaded */
@@ -561,8 +599,7 @@ public class TouchPad extends Surface implements AttachedPanel {
 					/* adaptive buffering using Hermite interpolation */
 					int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
 							+ Math.pow(y - p2.y, 2));
-					bufferCount = ((int) distance / 4) > 2 ? (int) distance / 4
-							: 3;
+					bufferCount = ((int) distance / 10) > 6 ? 6 : 3;
 					bufferCount = bufferCount < 10 ? bufferCount : 10;
 					
 
@@ -610,13 +647,11 @@ public class TouchPad extends Surface implements AttachedPanel {
 					
 					canvas_context.quadraticCurveTo(x, y, nextx, nexty);
 					canvas_context.stroke();
-					surface.restore();
-
+					
 					/* adaptive buffering using Hermite interpolation */
 					int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
 							+ Math.pow(y - p2.y, 2));
-					bufferCount = ((int) distance / 4) > 2 ? (int) distance / 4
-							: 3;
+					bufferCount = ((int) distance / 10) > 6 ? 6 : 3;
 					bufferCount = bufferCount < 10 ? bufferCount : 10;
 					// logger.log(Level.SEVERE, "bufferCount "+
 					// bufferCount);
@@ -654,7 +689,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 				canvas_context.arc(x, y, ((double) strokeSize) * 0.4, 0,
 						2 * Math.PI);
 				canvas_context.fill();
-
+				canvas_context.stroke();
+				
 				bufferCount = 3;
 
 			}

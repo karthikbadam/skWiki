@@ -1,0 +1,4 @@
+content_database:team1
+owner_database:main_team1
+username:postgres
+password:fujiko

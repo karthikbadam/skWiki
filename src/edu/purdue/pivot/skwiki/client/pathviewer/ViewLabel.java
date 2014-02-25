@@ -13,12 +13,12 @@ public class ViewLabel {
 	//String text = "";
 	Text textDrawing1 ;
 	Text textDrawing2 ;
-	ArrayList<Text> textList = new ArrayList<Text>();
+	//ArrayList<Text> textList = new ArrayList<Text>();
 	
 	private MyCircle circle;
 	private int radius = 15;
 	
-	public ViewLabel(int x, int y,String text1, String text2, int index)
+	public ViewLabel(int x, int y, String text1, String text2, int index)
 	{
 		posX = x;
 		posY = y;
@@ -27,10 +27,11 @@ public class ViewLabel {
 //		int textPosX = posX - width/2 +5;
 //		int textPosY = posY- height/2+10;
 		
-		textDrawing1 = new Text(posX - width/2 +5, posY- height/2+15, text1);
+		textDrawing1 = new Text(posX -5, posY + 5, ""+index);
 		textDrawing1.setFontSize(12);
 		textDrawing1.setFontFamily("Arial");
-		textDrawing1.setFillColor("black");
+		textDrawing1.setStrokeColor("gray");
+		
 		
 		textDrawing2 = new Text(posX - width/2 +5, posY- height/2+15+ 25, text2);
 		textDrawing2.setFontSize(12);
@@ -40,8 +41,9 @@ public class ViewLabel {
 	}
 	
 	public void setColor(String color)
-	{
-		circle.setFillColor(color);
+	{	
+		textDrawing1.setStrokeColor(color);
+		textDrawing1.setFillColor(color);
 	}
 
 	public int getWidth() {
@@ -87,8 +89,8 @@ public class ViewLabel {
 	
 	public void appendTo(DrawingArea canvas)
 	{
+		canvas.add(textDrawing1);
 		canvas.add(this.circle);
-		//canvas.add(textDrawing1);
 		//canvas.add(textDrawing2);
 	}
 	

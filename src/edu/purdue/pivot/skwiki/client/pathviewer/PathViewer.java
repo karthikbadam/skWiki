@@ -44,7 +44,7 @@ public class PathViewer extends AbsolutePanel {
 			int windowWidth, int windowHeight) {
 		super();
 		this.checkoutHandler = checkoutHandler;
-		this.setSize("10800px", "17500px");
+		this.setSize("2160px", "7500px");
 		this.revisionHistory = revisionHistory;
 		this.add(canvas);
 		this.uid = uid;
@@ -72,6 +72,9 @@ public class PathViewer extends AbsolutePanel {
 			//Window.alert("please update revision list");
 			return;
 		}
+		
+		this.setSize("2500px", 150*revisionHistory.size()+"px");
+		
 		// setup the column
 		boolean hasUID = false;
 		for (RevisionHistory tempRevisionHistory : revisionHistory) {
@@ -142,6 +145,7 @@ public class PathViewer extends AbsolutePanel {
 
 			circles.add(tempViewLabel.getCircle());
 			tempViewLabel.getCircle().setColor(userColorMap.get(tempRevisionHistory.getId()));
+			tempViewLabel.setColor(userColorMap.get(tempRevisionHistory.getId()));
 
 			tempViewLabel.getCircle().addClickHandler(new ClickHandler() {
 				@Override
