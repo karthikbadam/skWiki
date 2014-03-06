@@ -266,8 +266,8 @@ final public class WindowPanel extends FocusPanel {
 			((TouchPad)contentPanel).redraw();
 		}
 		else {
-		contentPanel.setHeight(height+"px");
-		contentPanel.setWidth(width+"px");
+			contentPanel.setHeight(height+"px");
+			contentPanel.setWidth(width+"px");
 		}
 	}
 

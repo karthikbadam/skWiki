@@ -1,4 +1,5 @@
 $(document).ready(function() { 
+	
 	$("#newuser-text").click(function() {
 		console.log("a clicked"+$(".login").text());
 		if ($(".login").text() === "SKWIKI LOGIN") {

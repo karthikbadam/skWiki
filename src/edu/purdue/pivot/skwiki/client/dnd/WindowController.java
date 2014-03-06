@@ -61,7 +61,7 @@ final public class WindowController {
 			String id;
 			if (windowPanel.contentPanel instanceof PreloadedImage) {
 				PreloadedImage image = ((PreloadedImage)windowPanel.contentPanel); 
-				id = "Image"+image.getUniqId();
+				id = image.getUniqId();
 				
 			} else {
 				id = windowPanel.editPanel.getID();

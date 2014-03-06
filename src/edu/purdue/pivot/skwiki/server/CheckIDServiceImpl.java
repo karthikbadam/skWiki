@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Properties;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -109,7 +110,13 @@ CheckIDService {
 		ResultSet rs = null;
 
 		try {
+			
 
+			/* LOG */
+			Date date= new Date();
+			System.out.println(date.toString()+",checkid"+","+input.id+",");
+			
+			
 			connection = DriverManager.getConnection(
 					"jdbc:postgresql://127.0.0.1:5432/"+current_project_name, "postgres",
 					"fujiko");

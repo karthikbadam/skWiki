@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -334,7 +335,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		/* read database details from file */
 		BufferedReader br;
 		//main_database_name = "mainbase";
-	    
+		
 		try {
 			br = new BufferedReader(new FileReader(this.getServletContext().getRealPath("/serverConfig.txt")));
 	        StringBuilder sb = new StringBuilder();
@@ -383,6 +384,7 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 		int fromRevision = input.fromRevision; // parent revision
 		String comment = input.comment; // comments
 
+		Date date= new Date();
 		try {
 			Class.forName("org.postgresql.Driver");
 		} catch (ClassNotFoundException e) {
@@ -422,6 +424,10 @@ public class CommitServiceImpl extends RemoteServiceServlet implements
 				id_count = rs.getInt(1);
 			}
 
+			
+			/* LOG */
+			System.out.println(date.toString()+",commit"+","+input.id+","+id_count);
+			
 			// System.out.println("current revision is --" + id_count
 			// + " and previous revision --" + fromRevision);
 		} catch (SQLException e) {

@@ -75,7 +75,7 @@ public class SkwikiEntryPoint implements EntryPoint {
 	public static final int COOKIE_EXPIRE_DAYS = 3;
 	public static final long MILLISECS_PER_DAY = 1000L * 60L * 60L * 24L;
 
-	private String uid = "";
+	private String 	uid = "";
 	public String fromUID = "";
 	public String current_project_name = "postchi_testing";
 
@@ -1258,6 +1258,8 @@ public class SkwikiEntryPoint implements EntryPoint {
 		public void onClick(ClickEvent event) {
 			DataPack packtoSend = new DataPack();
 			packtoSend.projectName = current_project_name;
+			packtoSend.id = uid;
+			
 			try {
 				// ServiceDefTarget endpoint = (ServiceDefTarget)
 				// checkIDService;

@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import edu.purdue.pivot.skwiki.client.CheckoutService;
 import edu.purdue.pivot.skwiki.shared.AbstractLayoutHistory;
@@ -122,7 +124,11 @@ public class CheckoutServiceImpl extends RemoteServiceServlet implements
 			int targetRevision = input.updateRevision;
 			int nonWholeSequence_id = input.nonWholeSequence_id;
 			int directFromRevision = 0;
-
+			
+			/* LOG */
+			Date date= new Date();
+			System.out.println(date.toString()+",checkout"+","+input.id+","+input.updateRevision);
+			
 			if (nonWholeSequence_id != 0) {
 
 				String selectStr = "select from_revision from currentrevision where revision = "

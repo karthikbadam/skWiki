@@ -16,7 +16,6 @@
 	padding-top: 0px;
 }
 
-
 iframe:not([seamless]) {
 	border: 0px inset;
 	border-top-color: initial;

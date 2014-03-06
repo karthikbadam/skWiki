@@ -15,12 +15,22 @@ import gwt.g2d.shared.Color;
 import gwt.g2d.shared.math.Rectangle;
 import gwt.g2d.shared.math.Vector2;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.LineCap;
 import com.google.gwt.canvas.dom.client.Context2d.LineJoin;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.TouchEndEvent;
 import com.google.gwt.event.dom.client.TouchEndHandler;
 import com.google.gwt.event.dom.client.TouchMoveEvent;
@@ -55,10 +65,15 @@ public class TouchPad extends Surface implements AttachedPanel {
 	private Color currentColor = KnownColor.BLACK;
 	private int eraserSize = 5;
 
+	Date lastTime = new Date();
+	public final static long SECOND_MILLIS = 1000;
+	public final static long MINUTE_MILLIS = SECOND_MILLIS * 60;
+	double totalSampling = 0; 
+	
 //	/* slider for strokeSize */
 //	Slider hSlider = new Slider("Stroke Size");
 //	HorizontalPanel sliderPanel = new HorizontalPanel();
-//	Logger logger = Logger.getLogger("Skwiki");
+	//Logger logger = Logger.getLogger("Skwiki");
 
 //	com.smartgwt.client.widgets.Window colorWin = new com.smartgwt.client.widgets.Window();
 //	com.smartgwt.client.widgets.Window sliderWin = new com.smartgwt.client.widgets.Window();
@@ -78,6 +93,8 @@ public class TouchPad extends Surface implements AttachedPanel {
 	/* variables to store previous x and y */
 	double oldx = -1;
 	double oldy = -1;
+	double prevx = -1;
+	double prevy = -1;
 	
 	/* indexes of touch start events */
 	ArrayList<Integer> indexes = new ArrayList<Integer>();
@@ -120,6 +137,14 @@ public class TouchPad extends Surface implements AttachedPanel {
 		preview = true; 
 	}
 
+	public static int minutesDiff(Date earlierDate, Date laterDate) {
+		if (earlierDate == null || laterDate == null)
+			return 0;
+
+		return (int) ((laterDate.getTime() / MINUTE_MILLIS) - (earlierDate
+				.getTime() / MINUTE_MILLIS));
+	}
+	
 	public TouchPad(String uuid, String uid,
 			ArrayList<CanvasToolbar> toolbars2, int windowWidth,
 			int windowHeight) {
@@ -163,11 +188,10 @@ public class TouchPad extends Surface implements AttachedPanel {
 		inFocus = true; 
 		
 		/* needs a mouse handler for M.S. Surface */
-
-		this.addTouchStartHandler(new TouchStartHandler() {
+		this.addMouseDownHandler(new MouseDownHandler() {
 
 			@Override
-			public void onTouchStart(TouchStartEvent event) {
+			public void onMouseDown(MouseDownEvent event) {
 				myHistoryManagerRedoStack.clearHistory();
 				leftMouseDown = true;
 
@@ -176,13 +200,15 @@ public class TouchPad extends Surface implements AttachedPanel {
 				} else {
 					surface.getElement().getStyle().setCursor(Cursor.CROSSHAIR);
 
-					int x = event.getTouches().get(0).getPageX()
-							- surface.getAbsoluteLeft();
-					int y = event.getTouches().get(0).getPageY()
-							- surface.getAbsoluteTop();
+					lastTime = new Date();
+					
+					int x = event.getX();
+					int y = event.getY();
 
 					oldx = x;
 					oldy = y;
+					prevx = x;
+					prevy = y;
 
 					PathHeadHistory aPathHeadHistory = new PathHeadHistory(
 							new Point(x, y), strokeSize, currentColor);
@@ -214,7 +240,231 @@ public class TouchPad extends Surface implements AttachedPanel {
 				event.stopPropagation();
 			}
 		});
+		
+		this.addTouchStartHandler(new TouchStartHandler() {
 
+			@Override
+			public void onTouchStart(TouchStartEvent event) {
+				myHistoryManagerRedoStack.clearHistory();
+				leftMouseDown = true;
+
+				if (erase == true) {
+
+				} else {
+					surface.getElement().getStyle().setCursor(Cursor.CROSSHAIR);
+
+					lastTime = new Date();
+					
+					int x = event.getTouches().get(0).getPageX()
+							- surface.getAbsoluteLeft();
+					int y = event.getTouches().get(0).getPageY()
+							- surface.getAbsoluteTop();
+
+					oldx = x;
+					oldy = y;
+					prevx = x;
+					prevy = y;
+
+					PathHeadHistory aPathHeadHistory = new PathHeadHistory(
+							new Point(x, y), strokeSize, currentColor);
+					myHistoryManager.addHistory(aPathHeadHistory);
+
+					/* touch start */
+					if (strokePointCount == 0) {
+						p1.x = x;
+						p1.y = y;
+						p2.x = x;
+						p2.y = y;
+						strokePointCount++;
+						strokePointCount++;
+						canvas_context.setStrokeStyle(currentColor.getColorCode());
+						canvas_context.setFillStyle(currentColor.getColorCode());
+						canvas_context
+								.setLineWidth(((double) strokeSize) * 0.4);
+						canvas_context.beginPath();
+						canvas_context.arc(x, y, ((double) strokeSize) * 0.4,
+								0, 2 * Math.PI);
+						canvas_context.fill();
+						indexes.add(cache.size());
+						cache.add(new Vector2(x, y));
+						strokeSizes.add(strokeSize);
+						colorCache.add(new MyColor(currentColor.getR(), currentColor.getG(), currentColor.getB()));
+					}
+				}
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		});
+		
+		/* mouse move handler */
+		this.addMouseMoveHandler(new MouseMoveHandler() {
+			@Override
+			public void onMouseMove(MouseMoveEvent event) {
+
+				double x = event.getX();
+				double y = event.getY();
+
+				if (erase && leftMouseDown) {
+
+					eraserSize = 20;
+					Rectangle rectangle = new Rectangle(x, y, eraserSize,
+							+eraserSize);
+					surface.save().setFillStyle(KnownColor.WHITE)
+							.fillRectangle(rectangle);
+					RemoveHistory aRemoveHistory = new RemoveHistory(new Point(
+							(int) x, (int) y), eraserSize);
+					myHistoryManager.addHistory(aRemoveHistory);
+
+				} else if (leftMouseDown) {
+
+					Date currentTime = new Date();
+					double distance2 = Math.sqrt(Math.pow(x - prevx, 2) + Math.pow(y - prevy, 2));
+					double samplingSpeed = distance2/((double)minutesDiff(lastTime, currentTime));
+					//logger.log(Level.SEVERE, "time "+(double)minutesDiff(lastTime, currentTime));
+					//logger.log(Level.SEVERE, "Sampling speed "+distance2);
+					
+					//totalSampling = (myHistoryManager.historys.size()*totalSampling + samplingSpeed)/((double)myHistoryManager.historys.size()+1.0);
+					//logger.log(Level.SEVERE, "Sampling speed "+totalSampling);
+					
+					AddHistory addHistory = new AddHistory(new Point((int) x,
+							(int) y), new Point((int) x, (int) y), strokeSize,
+							currentColor);
+					myHistoryManager.addHistory(addHistory);
+
+					if (strokePointCount == 2) {
+
+						canvas_context.setLineCap(LineCap.ROUND);
+						canvas_context.setLineJoin(LineJoin.ROUND);
+						
+						if (currentColor != KnownColor.WHITE) {
+							/* set stroke color and shadow */
+							canvas_context.setStrokeStyle(currentColor
+									.getColorCode());
+							canvas_context.setFillStyle(currentColor.getColorCode());
+							canvas_context
+							.setLineWidth(((double) strokeSize) * 0.5);
+							canvas_context
+									.setShadowBlur(((double) strokeSize) * 0.3);
+							canvas_context.setShadowColor(currentColor
+									.getColorCode());
+						} else {
+							/* set stroke color and shadow */
+							canvas_context.setStrokeStyle(currentColor.getColorCode());
+							canvas_context.setFillStyle(currentColor.getColorCode());
+							canvas_context.setLineWidth(((double) strokeSize));
+							canvas_context
+							.setShadowBlur(0);
+						}
+						
+						/* latest touch point */
+						p3.x = x;
+						p3.y = y;
+						p0.x = p1.x + (p1.x - p2.x);
+						p0.y = p1.y + (p1.y - p2.y);
+						strokePointCount++;
+
+						/* buffer list */
+						get_buffer(p0, p1, p2, p3, bufferCount);
+
+						bufferCount = buffList.size();
+						oldx = (int) buffList.get(0).x;
+						oldy = (int) buffList.get(0).y;
+						canvas_context.beginPath();
+						canvas_context.moveTo(oldx, oldy);
+						cache.add(new Vector2(oldx, oldy));
+						
+						/*
+						 * draw all interpolated points found through Hermite
+						 * interpolation
+						 */
+						int i = 0;
+						for (i = 1; i < bufferCount - 2; i++) {
+							x = buffList.get(i).x;
+							y = buffList.get(i).y;
+							cache.add(new Vector2(x, y));
+							
+							double nextx = buffList.get(i + 1).x;
+							double nexty = buffList.get(i + 1).y;
+							double c = (x + nextx) / 2;
+							double d = (y + nexty) / 2;
+							canvas_context.quadraticCurveTo(x, y, c, d);
+
+						}
+						x = buffList.get(i).x;
+						y = buffList.get(i).y;
+						cache.add(new Vector2(x, y));
+						
+						double nextx = buffList.get(i + 1).x;
+						double nexty = buffList.get(i + 1).y;
+						cache.add(new Vector2(nextx, nexty));
+						
+						canvas_context.quadraticCurveTo(x, y, nextx, nexty);
+
+						/* adaptive buffering! based on distance between points */
+						int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
+								+ Math.pow(y - p2.y, 2));
+						bufferCount = ((int) distance / 10) > 6 ? 6 : 3;
+						bufferCount = bufferCount < 10 ? bufferCount : 10;
+
+						// logger.log(Level.SEVERE, "bufferCount "+
+						// bufferCount);
+					} else {
+
+						/* update the touch point list */
+						p0.x = p1.x;
+						p0.y = p1.y;
+						p1.x = p2.x;
+						p1.y = p2.y;
+						p2.x = p3.x;
+						p2.y = p3.y;
+						p3.x = x;
+						p3.y = y;
+
+						get_buffer(p0, p1, p2, p3, bufferCount);
+
+						/*
+						 * draw all interpolated points found through Hermite
+						 * interpolation
+						 */
+						bufferCount = buffList.size();
+						int i = 1;
+						for (i = 1; i < bufferCount - 2; i++) {
+							x = buffList.get(i).x;
+							y = buffList.get(i).y;
+							cache.add(new Vector2(x, y));
+							
+							double nextx = buffList.get(i + 1).x;
+							double nexty = buffList.get(i + 1).y;
+							double c = (x + nextx) / 2;
+							double d = (y + nexty) / 2;
+							canvas_context.quadraticCurveTo(x, y, c, d);
+						}
+						x = buffList.get(i).x;
+						y = buffList.get(i).y;
+						cache.add(new Vector2(x, y));
+						
+						double nextx = buffList.get(i + 1).x;
+						double nexty = buffList.get(i + 1).y;
+						cache.add(new Vector2(nextx, nexty));
+						
+						canvas_context.quadraticCurveTo(x, y, nextx, nexty);
+						canvas_context.stroke();
+						surface.restore();
+
+						/* adaptive buffering using Hermite interpolation */
+						int distance = (int) Math.sqrt(Math.pow(x - p2.x, 2)
+								+ Math.pow(y - p2.y, 2));
+						bufferCount = ((int) distance / 10) > 6 ? 6 : 3;
+						bufferCount = bufferCount < 10 ? bufferCount : 10;
+						// logger.log(Level.SEVERE, "bufferCount "+
+						// bufferCount);
+					}
+				}
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		});
+		
 		/* touch move handler */
 		this.addTouchMoveHandler(new TouchMoveHandler() {
 			@Override
@@ -238,6 +488,15 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 				} else if (leftMouseDown) {
 
+					Date currentTime = new Date();
+					double distance2 = Math.sqrt(Math.pow(x - prevx, 2) + Math.pow(y - prevy, 2));
+					double samplingSpeed = distance2/((double)minutesDiff(lastTime, currentTime));
+					//logger.log(Level.SEVERE, "time "+(double)minutesDiff(lastTime, currentTime));
+					//logger.log(Level.SEVERE, "Sampling speed "+distance2);
+					
+					//totalSampling = (myHistoryManager.historys.size()*totalSampling + samplingSpeed)/((double)myHistoryManager.historys.size()+1.0);
+					//logger.log(Level.SEVERE, "Sampling speed "+totalSampling);
+					
 					AddHistory addHistory = new AddHistory(new Point((int) x,
 							(int) y), new Point((int) x, (int) y), strokeSize,
 							currentColor);
@@ -381,6 +640,26 @@ public class TouchPad extends Surface implements AttachedPanel {
 
 			@Override
 			public void onTouchEnd(TouchEndEvent event) {
+				leftMouseDown = false;
+				event.preventDefault();
+				surface.setStyleName("gwt-TouchPanelWidget");
+				if (erase == true) {
+
+				} else {
+					surface.getElement().getStyle().setCursor(Cursor.DEFAULT);
+				}
+				event.stopPropagation();
+				// erase = false;
+				strokePointCount = 0;
+				bufferCount = 3;
+
+			}
+		});
+		
+		this.addMouseUpHandler(new MouseUpHandler() {
+
+			@Override
+			public void onMouseUp(MouseUpEvent event) {
 				leftMouseDown = false;
 				event.preventDefault();
 				surface.setStyleName("gwt-TouchPanelWidget");

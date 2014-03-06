@@ -14,6 +14,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.smartgwt.client.types.HeaderControls;
+import com.smartgwt.client.widgets.HeaderControl;
 import com.smartgwt.client.widgets.grid.ListGrid;
 import edu.purdue.pivot.skwiki.client.dnd.WindowController;
 import edu.purdue.pivot.skwiki.client.dnd.WindowPanel;
@@ -53,7 +55,7 @@ public class WidgetManager {
 	private ScrollPanel widgetPanel;
 	public AbsolutePanel boundaryPanel;
 	private WindowController windowController;
-	private PopupPanel imagePopup;
+	//private PopupPanel imagePopup;
 	// private PopupPanel settings_popup;
 	public ListGrid entityList;
 	
@@ -150,7 +152,8 @@ public class WidgetManager {
 		// settings_window.setHeight(5*BUTTON_SIZE);
 		// settings_window.setOverflow(com.smartgwt.client.types.Overflow.AUTO);
 		// settings_window.setLeft(windowWidth-100);
-
+		
+		
 	}
 
 	protected void addVector() {
@@ -291,20 +294,49 @@ public class WidgetManager {
 	}
 
 	private String imageEditorUUID;
+	/* image popup window */
+	com.smartgwt.client.widgets.Window imagePopup ;
 
+	
 	/* add Image */
 	protected void addImage(String imageEditorUUID) {
 		
-		
 		this.imageEditorUUID = imageEditorUUID;
-		// Create a new multiuploader and attach it to the document
+
+		/* Create a new multiuploader and attach it to the document */
 		MultiUploader defaultUploader = new MultiUploader();
-		imagePopup = new PopupPanel();
-		imagePopup.add(defaultUploader);
+		
+		imagePopup = new com.smartgwt.client.widgets.Window();
+		/* prepare the popup window */
+		imagePopup.setTitle("Upload image");
+		imagePopup.setShowMinimizeButton(true);
+		HeaderControl close = new HeaderControl(HeaderControl.CLOSE,
+				new com.smartgwt.client.widgets.events.ClickHandler() {
+					@Override
+					public void onClick(
+							com.smartgwt.client.widgets.events.ClickEvent event) {
+						imagePopup.destroy();
+					}
+
+				});
+
+		close.setWidth(25);
+		close.setHeight(25);
+		imagePopup.setHeaderControls(HeaderControls.HEADER_LABEL, close);
+		imagePopup.setCanDragReposition(true);
+		imagePopup.setCanDragResize(true);
+		imagePopup.setAutoSize(true);
+		imagePopup.setCanDragReposition(true);
+		imagePopup.setCanDragResize(true);
+		
+		imagePopup.addItem(defaultUploader);
 		imagePopup.show();
-		imagePopup.setPopupPosition(400, 300);
-		imagePopup.getElement().getStyle().setZIndex(4);
-		imagePopup.setAutoHideEnabled(true);
+		imagePopup.setLeft(400 - imagePopup.getWidth() - 10);
+		imagePopup.setTop(300 - imagePopup.getHeight() - 20);
+		imagePopup.getHeader().setHeight(28);
+		
+		//imagePopup.getElement().getStyle().setZIndex(4);
+		//imagePopup.setAutoHideEnabled(true);
 		// Enable/disable the component
 		defaultUploader.setEnabled(true);
 		// Add a finish handler which will load the image once the upload
@@ -574,16 +606,13 @@ public class WidgetManager {
 					imageEditors.add(myEditor);
 					root.addChild(tempImage);
 					myEditor.updateEditor(result);
-					PreloadedImage image = new PreloadedImage(
-							myEditor.getURL	(), showImage);
-					image.setUniqId(myEditor.getID());
-
-					OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler() {
+					
+					OnLoadPreloadedImageHandler showImage2 = new OnLoadPreloadedImageHandler() {
 						@Override
 						public void onLoad(PreloadedImage image) {
 							HorizontalPanel header = new HorizontalPanel();
 							myEditor.setImage(image);
-							image.setWidth(myEditor.getWidth() + "px");
+							image.setWidth("200px");
 							header.add(new Label("image"
 									+ (imageEditorIndex + 1)));
 							WindowPanel windowPanel1 = new WindowPanel(
@@ -593,8 +622,40 @@ public class WidgetManager {
 							editors.add(windowPanel1);
 							imageEditorIndex++;
 							windowPanelmap.put(myEditor.getID(), windowPanel1);
+							
+							/* adjusting the positions of each image */
+							
+							for (AbstractLayoutHistory tempLayoutHistory : layoutHistoryList) {
+								if (tempLayoutHistory instanceof ChangePosHistory) {
+									String object = ((ChangePosHistory) tempLayoutHistory).getOperatingObject();
+									
+									if ( object.equals(myEditor.getID())) {
+										int left = ((ChangePosHistory) tempLayoutHistory).getNewX();
+										int top = ((ChangePosHistory) tempLayoutHistory).getNewY();
+										// Window.alert("" + left + ", " + top);
+										windowPanel1.moveTo(left, top);
+									}
+								}
+
+								if (tempLayoutHistory instanceof ChangeSizeHistory) {
+									String object = ((ChangeSizeHistory) tempLayoutHistory).getOperatingObject();
+									
+									if (object.equals(myEditor.getID())) {
+										int width = ((ChangeSizeHistory) tempLayoutHistory)
+												.getNewX();
+										int height = ((ChangeSizeHistory) tempLayoutHistory)
+												.getNewY();
+										windowPanel1.setContentSize(width, height);
+									}
+								}
+							}
 						}
 					};
+					
+					PreloadedImage image = new PreloadedImage(
+							myEditor.getURL	(), showImage2);
+					image.setUniqId(myEditor.getID());
+					
 				}
 			}
 		}
@@ -611,6 +672,7 @@ public class WidgetManager {
 		for (MyCanvasEditor tempCanvasEditor : canvasEditors) {
 			tempCanvasEditor.updateEditor(result);
 		}
+
 
 		// // ******** update all image editors
 		// for (MyImageViewer tempImageEditor : imageEditors) {
